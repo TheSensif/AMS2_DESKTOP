@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.osgi_3.18.100.v20220817-1601.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.commands_3.10.200.v20220512-0851.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.common_3.16.200.v20220817-1601.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.registry_3.11.200.v20220817-1601.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.runtime_3.26.0.v20220813-0916.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.text_3.12.200.v20220817-1340.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.swt.win32.win32.x86_64_3.121.0.v20220829-1402.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface_3.27.0.v20220817-1444.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface.text_3.21.0.v20220817-1340.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.workbench_3.126.0.v20220823-0718.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/com.ibm.icu_67.1.0.v20200706-1749.jar!/" />
+    <libelement value="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.forms_3.11.400.v20220817-1444.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jgoodies-common-1.8.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jgoodies-forms-1.8.0.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="org.eclipse.osgi_3.18.100.v20220817-1601.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.osgi_3.18.100.v20220817-1601.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.osgi_3.18.100.v20220817-1601.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.commands_3.10.200.v20220512-0851.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.commands_3.10.200.v20220512-0851.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.commands_3.10.200.v20220512-0851.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.common_3.16.200.v20220817-1601.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.common_3.16.200.v20220817-1601.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.common_3.16.200.v20220817-1601.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.registry_3.11.200.v20220817-1601.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.registry_3.11.200.v20220817-1601.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.equinox.registry_3.11.200.v20220817-1601.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.runtime_3.26.0.v20220813-0916.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.runtime_3.26.0.v20220813-0916.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.core.runtime_3.26.0.v20220813-0916.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.text_3.12.200.v20220817-1340.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.text_3.12.200.v20220817-1340.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.text_3.12.200.v20220817-1340.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.swt.win32.win32.x86_64_3.121.0.v20220829-1402.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.swt.win32.win32.x86_64_3.121.0.v20220829-1402.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.swt.win32.win32.x86_64_3.121.0.v20220829-1402.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jface_3.27.0.v20220817-1444.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface_3.27.0.v20220817-1444.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface_3.27.0.v20220817-1444.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jface.text_3.21.0.v20220817-1340.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface.text_3.21.0.v20220817-1340.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.jface.text_3.21.0.v20220817-1340.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.ui.workbench_3.126.0.v20220823-0718.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.workbench_3.126.0.v20220823-0718.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.workbench_3.126.0.v20220823-0718.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.ibm.icu_67.1.0.v20200706-1749.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/com.ibm.icu_67.1.0.v20200706-1749.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/com.ibm.icu_67.1.0.v20200706-1749.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.ui.forms_3.11.400.v20220817-1444.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.forms_3.11.400.v20220817-1444.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.p2/pool/plugins/org.eclipse.ui.forms_3.11.400.v20220817-1444.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jgoodies-common-1.8.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/jgoodies-common-1.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/jgoodies-common-1.8.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jgoodies-forms-1.8.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/jgoodies-forms-1.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/jgoodies-forms-1.8.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>

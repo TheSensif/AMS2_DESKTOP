@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.InputEvent;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class InitDesktop extends JFrame {
 	private static InitDesktop frame;
@@ -87,7 +89,14 @@ public class InitDesktop extends JFrame {
 		File archivo = jf.getSelectedFile();
 		
 		if (archivo != null) {
-			System.out.println(archivo.getAbsolutePath());
+			String name = archivo.getName();
+			String [] part = name.split("\\.");
+			if (Objects.equals(part[1],"xml")){
+				System.out.println("Es un xml");
+			}else {
+				System.out.println("No es un xml");
+			}
+
 		}
 	}
 }
