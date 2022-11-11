@@ -1,17 +1,20 @@
-import java.awt.EventQueue;
-import java.awt.Toolkit;
+import database.Database;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.InputEvent;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Objects;
 
 public class InitDesktop extends JFrame {
@@ -25,6 +28,7 @@ public class InitDesktop extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Database.startDatabase();
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					frame = new InitDesktop();
 					frame.setTitle("IETI Industry");
@@ -39,7 +43,7 @@ public class InitDesktop extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public InitDesktop() {
+	public InitDesktop() throws IOException {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -51,6 +55,10 @@ public class InitDesktop extends JFrame {
 		menuBar.add(mnArchivo);
 		
 		JMenuItem mntmCargarConfiguracion = new JMenuItem("Cargar Configuracion");
+		// Cargar icono
+		BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
+		Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
+		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));
 		mntmCargarConfiguracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openFile();
