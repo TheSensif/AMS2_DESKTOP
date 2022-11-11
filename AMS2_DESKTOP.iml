@@ -181,5 +181,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="sqlite-jdbc-3.39.3.0" level="project" />
   </component>
 </module>
