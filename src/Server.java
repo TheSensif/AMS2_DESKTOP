@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.java_websocket.WebSocket;
@@ -96,12 +97,22 @@ public class Server extends WebSocketServer {
                 String filePath = basePath + "database/database.db";
                 Connection sqlite = UtilsSQLite.connect(filePath);
                 ResultSet end = UtilsSQLite.querySelect(sqlite, "SELECT * FROM users where nom='"+param[0]+"' and password='"+param[1]+"';");
+                
+               
                 try {
-                    if(end.getFetchSize()>0){
+                    //end.getString(1).length()>0
+                    int quantity = 0;
+                    while (end.next()) {
+                        quantity+=1;
+                    }
+
+                    if(quantity>0){
                         conn.send("OK");
+                        System.out.println("OK");
                     }
                     else{
                         conn.send("ERROR");
+                        System.out.println("ERROR");
                     }
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
