@@ -55,7 +55,7 @@ public class InitDesktop extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public test() throws IOException {
+	public InitDesktop() throws IOException {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
