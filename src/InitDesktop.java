@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class test extends JFrame {
-	private static test frame;
+public class InitDesktop extends JFrame {
+	private static InitDesktop frame;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
 	private Boolean activated;
@@ -42,7 +42,7 @@ public class test extends JFrame {
 				try {
 					//Database.startDatabase();
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					frame = new test();
+					frame = new InitDesktop();
 					frame.setTitle("IETI Industry");
 					frame.setVisible(true);
 				} catch (Exception e) {
