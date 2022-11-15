@@ -1,15 +1,22 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-// Compilar amb:
+import database.UtilsSQLite;
+
+// Compilar amb: 
 // javac -cp "lib/*:." Servidor.java
 // java -cp "lib/*:." Servidor
 
@@ -85,6 +92,44 @@ public class Server extends WebSocketServer {
         }
         else if(message=="requestConfiguration"){
             conn.send(this.configurationData);
+        }else{
+            String[] param=message.split("&");
+            if(param.length>1){
+                String basePath = System.getProperty("user.dir") + File.separator;
+                String filePath = basePath + "database/database.db";
+                Connection sqlite = UtilsSQLite.connect(filePath);
+                ResultSet end = UtilsSQLite.querySelect(sqlite, "SELECT * FROM users where nom='"+param[0]+"' and password='"+param[1]+"';");
+                
+               
+                try {
+                    //end.getString(1).length()>0
+                    int quantity = 0;
+                    while (end.next()) {
+                        quantity+=1;
+                    }
+
+                    if(quantity>0){
+                        conn.send("OK");
+                        System.out.println("OK");
+                    }
+                    else{
+                        conn.send("ERROR");
+                        System.out.println("ERROR");
+                    }
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    conn.send("ERROR");
+                }
+                try {
+                    sqlite.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            
+
         }
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress()+" sended a message");
     };
