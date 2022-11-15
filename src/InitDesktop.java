@@ -4,6 +4,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import modules.DataModule;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,9 +70,9 @@ public class InitDesktop extends JFrame {
 		
 		JMenuItem mntmCargarConfiguracion = new JMenuItem("Charge configuration");
 		//Charging the icon
-		BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
+		/*BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
 		Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
-		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));
+		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));*/
 		mntmCargarConfiguracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openFile();
@@ -84,7 +86,7 @@ public class InitDesktop extends JFrame {
 		menuBar.add(mnVisualizacion);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new GridLayout(0, 4));
+		contentPane.setLayout(new GridLayout(2, 2));
 		setContentPane(contentPane);
 
 		
@@ -299,10 +301,11 @@ public class InitDesktop extends JFrame {
 				} catch (SAXException e) {
 					throw new RuntimeException(e);
 				}
-
+				
 				System.out.println("It is xml");
 			}else {
 				System.out.println("It is not an xml");
+				JOptionPane.showMessageDialog(null," It is not an xml");
 			}
 
 		}
