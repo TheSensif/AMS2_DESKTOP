@@ -14,6 +14,8 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import database.UtilsSQLite;
+
 // Compilar amb: 
 // javac -cp "lib/*:." Servidor.java
 // java -cp "lib/*:." Servidor
