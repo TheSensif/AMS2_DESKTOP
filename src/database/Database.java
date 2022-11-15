@@ -14,7 +14,7 @@ public class Database {
             Connection conn = UtilsSQLite.connect(filePath);
 
             UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS users (" +
-                    "nom varchar(15) PRIMARY KEY, password varchar(15));");
+                    "name varchar(15) PRIMARY KEY, password varchar(15));");
 
             UtilsSQLite.queryUpdate(conn, "INSERT INTO users (nom, password) VALUES (\"admin\",\"1234\");");
 

@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,11 +10,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+
 // Compilar amb: 
+
 // javac -cp "lib/*:." Servidor.java
 // java -cp "lib/*:." Servidor
 
@@ -89,6 +93,7 @@ public class Server extends WebSocketServer {
         }
         else if(message=="requestConfiguration"){
             conn.send(this.configurationData);
+
         }else{
             String[] param=message.split("&");
             if(param.length>1){
@@ -116,6 +121,7 @@ public class Server extends WebSocketServer {
                 }
             }
             
+
 
         }
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress()+" sended a message");
