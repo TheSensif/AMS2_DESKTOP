@@ -62,10 +62,10 @@ public class Server extends WebSocketServer {
         // SEND INFO!!!!
         if(conn.getRemoteSocketAddress().getAddress().getHostAddress().equalsIgnoreCase("127.0.0.1")){
             System.out.println("YOU'RE THE DESKTOP!!!!");
-            conn.send("Welcome Desktop");
+            
         }
         else{
-            conn.send("Connected");
+            System.out.println("Youre other device");
         }
         // conn.send("Benvingut a WsServer"); 
 
