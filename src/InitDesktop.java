@@ -1,3 +1,4 @@
+import database.Database;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -47,6 +48,7 @@ public class InitDesktop extends JFrame {
 					frame = new InitDesktop();
 					frame.setTitle("IETI Industry");
 					frame.setVisible(true);
+					Database.startDatabase();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -70,9 +72,9 @@ public class InitDesktop extends JFrame {
 		
 		JMenuItem mntmCargarConfiguracion = new JMenuItem("Charge configuration");
 		//Charging the icon
-		/*BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
+		BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
 		Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
-		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));*/
+		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));
 		mntmCargarConfiguracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openFile();
@@ -301,11 +303,8 @@ public class InitDesktop extends JFrame {
 				} catch (SAXException e) {
 					throw new RuntimeException(e);
 				}
-				
-				System.out.println("It is xml");
 			}else {
-				System.out.println("It is not an xml");
-				JOptionPane.showMessageDialog(null," It is not an xml");
+				JOptionPane.showMessageDialog(null," It is not an xml","Error",JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
