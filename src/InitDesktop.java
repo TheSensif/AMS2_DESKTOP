@@ -165,7 +165,7 @@ public class InitDesktop extends JFrame {
 										values.put(eo.getAttribute("value"), eo.getTextContent());
 									}
 								}
-								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),values);
+								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getAttribute("label"),values);
 								dm.put(e.getAttribute("id"),id);
 							}
 							System.out.println(dm);

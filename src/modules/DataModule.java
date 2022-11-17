@@ -11,6 +11,7 @@ public class DataModule {
     private int max;
     private String step;
     private HashMap<String,String> value;
+    private String label;
     private String units;
     private int thresholdlow;
     private int thresholdhigh;
@@ -33,10 +34,11 @@ public class DataModule {
         this.name = name;
     }
 
-    public DataModule (String etiqueta, String id, String defaul, HashMap<String,String> value) {
+    public DataModule (String etiqueta, String id, String defaul, String label, HashMap<String,String> value) {
         this.etiqueta = etiqueta;
         this.id = id;
         this.defaul = defaul;
+        this.label = label;
         this.value = value;
     }
 
@@ -91,6 +93,14 @@ public class DataModule {
 
     public HashMap<String, String> getValue() {
         return value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getUnits() {
@@ -157,6 +167,7 @@ public class DataModule {
             return "DataModule{" + etiqueta + '\'' +
                     ", id='" + id + '\'' +
                     ", defaul='" + defaul + '\'' +
+                    ", label='" + label + '\'' +
                     ", value=" + value + '}';
         } else if (Objects.equals(etiqueta, "sensor")) {
             return "DataModule{" +
