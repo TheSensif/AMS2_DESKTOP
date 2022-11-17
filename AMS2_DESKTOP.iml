@@ -182,5 +182,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="sqlite-jdbc-3.39.3.0" level="project" />
+    <orderEntry type="library" name="password4j-1.6.2" level="project" />
+    <orderEntry type="library" name="Java-WebSocket-1.5.3" level="project" />
+    <orderEntry type="library" name="slf4j.api-1.6.1" level="project" />
+    <orderEntry type="library" name="slf4j-simple-1.6.1" level="project" />
   </component>
 </module>

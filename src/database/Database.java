@@ -21,12 +21,17 @@ public class Database {
             Connection conn = UtilsSQLite.connect(filePath);
 
             UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS users (" +
-                    "name varchar(15) PRIMARY KEY, password varchar(15));");
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,name varchar(15) NOT NULL UNIQUE, password varchar(500));");
 
-            UtilsSQLite.queryUpdate(conn, "INSERT INTO users (name, password) VALUES (\"admin\",\"" + UtilsSQLite.encrypt("1234") + "\");");
+            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS salts (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, salt varchar(500));");
 
-            System.out.println(UtilsSQLite.querySelect(conn, "SELECT * FROM users;").getString(2));
-            System.out.println(UtilsSQLite.decrypt(UtilsSQLite.querySelect(conn, "SELECT password FROM users;").getString(1)));
+            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS pepers (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, peper varchar(500));");
+
+            UtilsSQLite.queryUpdate(conn, "INSERT INTO users (name, password) VALUES (\"admin\",\"" + UtilsSQLite.encrypt(conn,"1234") + "\");");
+
+            //System.out.println(UtilsSQLite.decrypt(conn,UtilsSQLite.querySelect(conn, "SELECT id FROM users;").getInt(1),"1234",UtilsSQLite.querySelect(conn, "SELECT password FROM users;").getString(1)));
             UtilsSQLite.disconnect(conn);
         }
 
