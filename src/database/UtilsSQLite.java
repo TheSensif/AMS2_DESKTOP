@@ -116,7 +116,7 @@ public class UtilsSQLite {
         try {
             Statement stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { e.printStackTrace();System.out.println("ERROR SQLUTILS"); }
         return rs;
     }
 }

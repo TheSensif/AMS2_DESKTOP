@@ -14,6 +14,8 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.password4j.Password;
+
 import database.UtilsSQLite;
 
 // Compilar amb: 
@@ -98,23 +100,28 @@ public class Server extends WebSocketServer {
                 String basePath = System.getProperty("user.dir") + File.separator;
                 String filePath = basePath + "database/database.db";
                 Connection sqlite = UtilsSQLite.connect(filePath);
-                ResultSet end = UtilsSQLite.querySelect(sqlite, "SELECT * FROM users where nom='"+param[0]+"' and password='"+param[1]+"';");
                 
-               
+                ResultSet userId= UtilsSQLite.querySelect(sqlite, "SELECT * FROM users where name='"+param[0]+"';" );
+                
                 try {
-                    //end.getString(1).length()>0
-                    int quantity = 0;
-                    while (end.next()) {
-                        quantity+=1;
-                    }
-
-                    if(quantity>0){
-                        conn.send("OK");
-                        System.out.println("OK");
+                    
+                    if(userId.getInt("id")>0){
+                        ResultSet salt=UtilsSQLite.querySelect(sqlite, "SELECT salt FROM salts where id="+userId.getInt("id")+";" );
+                        ResultSet peper=UtilsSQLite.querySelect(sqlite, "SELECT peper FROM pepers where id="+userId.getInt("id")+";" );
+                        boolean check= Password.check(param[1], userId.getString("password")).addSalt(salt.getString("salt")).addPepper(peper.getString("peper")).withArgon2();
+                        
+                        if(check==true){
+                            conn.send("OK");
+                            System.out.println("OK");
+                        }else{
+                            conn.send("ERROR");
+                            System.out.println("ERROR Validation check");
+                        }
+                        
                     }
                     else{
                         conn.send("ERROR");
-                        System.out.println("ERROR");
+                        System.out.println("ERROR no user found");
                     }
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
