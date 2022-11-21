@@ -29,12 +29,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.json.*;
 
 public class InitDesktop extends JFrame {
 	private static InitDesktop frame;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
 	private Boolean activated;
+	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
+
+	//JSON manage method
+	//String jsonString = "{'pageInfo': {'pageName': 'abc','pagePic':'http://example.com/content.jpg'}}"; //assign your JSON String here
+	// JSONObject obj = new JSONObject(jsonString);
+	// String pageName = obj.getJSONObject("pageInfo").getString("pageName");
+	// System.out.println(pageName);
+
+	// if we use arrays we gonna usa json.append(key, value)
 
 	/**
 	 * Launch the application.
@@ -72,9 +82,9 @@ public class InitDesktop extends JFrame {
 		
 		JMenuItem mntmCargarConfiguracion = new JMenuItem("Charge configuration");
 		//Charging the icon
-		BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
-		Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
-		mntmCargarConfiguracion.setIcon(new ImageIcon(icon));
+		// BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
+		// Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
+		// mntmCargarConfiguracion.setIcon(new ImageIcon(icon));
 		mntmCargarConfiguracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openFile();
@@ -202,23 +212,43 @@ public class InitDesktop extends JFrame {
 					contentPane.revalidate();
 					contentPane.repaint();
 
+					// JPanel switchs=new JPanel();
+					// switchs.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
+
+					// JPanel sliders=new JPanel();
+					// sliders.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
+
+					// JPanel dropdowns=new JPanel();
+					// dropdowns.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
+
+					// JPanel sensors=new JPanel();
+					// sensors.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
+
+					// contentPane.add(switchs);
+					// contentPane.add(sliders);
+					
 					
 					for (int i = 0; i < dm.size(); i++) {		
 						//We will look to get the component id with its tagName
 						//Depending on the tagname it will create a diferent component
+						String toJson="{";
+
 						switch (dm.get(componentes.get(i)).getEtiqueta()) {
 							case "switch":
 								scrollPane = new JScrollPane();
 								
+								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+
 								JToggleButton tglbtn = new JToggleButton("");
 								//We will get the inital state specified on the xml
 								if ((dm.get(componentes.get(i)).getDefaul().equals("on"))) {
 									activated = true;
 									tglbtn.setText("Active");
+									toJson+="'default':true,";
 								} else {
 									activated = false;
 									tglbtn.setText("Not active");
-
+									toJson+="'default':false,";
 								}
 								
 								tglbtn.addActionListener(new ActionListener() {
@@ -235,8 +265,12 @@ public class InitDesktop extends JFrame {
 											tglbtn.enable();
 											activated = true;
 										}
+										// TODO HERE PUT METHOD TO SEND INFO TO SERVER
 									}
 								});;
+
+								toJson+="},";
+								json.append("switch", new JSONObject(toJson) );
 								scrollPane.setViewportView(tglbtn);
 								contentPane.add(scrollPane);
 								
@@ -245,8 +279,16 @@ public class InitDesktop extends JFrame {
 								JSlider jSlider = new JSlider();
 								scrollPane = new JScrollPane();
 
+								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+
+								toJson+="'default':"+Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue()+",";
+
 								//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
 								jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
+
+								toJson+="},";
+								json.append("slider", new JSONObject(toJson) );
+
 								scrollPane.setViewportView(jSlider);
 								contentPane.add(scrollPane);
 
@@ -255,6 +297,9 @@ public class InitDesktop extends JFrame {
 								JComboBox comboBox = new JComboBox();
 								scrollPane = new JScrollPane();
 
+								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+								toJson+="'values':[";
+								// TODO ¿??¿?¿?¿?¿?¿? need key and value
 								//Creating an arraylist with the keys of the hashmap
 								ArrayList<String> dropdownKeys = new ArrayList<>();
 								for (Object key : dm.get(componentes.get(i)).getValue().keySet()) {
@@ -262,6 +307,11 @@ public class InitDesktop extends JFrame {
 								    dropdownKeys.add(lKey);
 								}
 								
+								for (Object key : dm.get(componentes.get(i)).getValue().keySet() ) {
+								    String lKey = (String) key;
+									String value = dm.get(componentes.get(i)).getValue().get(key);
+								    toJson+="{"+lKey+":"+value+"},";
+								}
 								//We will iterate a for over with the Id quantity
 								for (int j = 0; j < dropdownKeys.size(); j++) {
 									
@@ -276,25 +326,36 @@ public class InitDesktop extends JFrame {
 									}
 									
 								}
-								
+								toJson+="]},";
+								json.append("dropdown", new JSONObject(toJson) );
 								scrollPane.setViewportView(comboBox);
 								contentPane.add(scrollPane);
 								break;
 							case "sensor":
 								JTextArea textArea = new JTextArea();
 								scrollPane = new JScrollPane();
+
+								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+
 								//The sensor will be a textArea with the specified units
 								textArea.setText(dm.get(componentes.get(i)).getUnits());
+
+								toJson+="'units':"+dm.get(componentes.get(i)).getUnits()+",";
+
 								//Enabled at false to not let the user modify it
-								textArea.setEnabled(false);
+								textArea.setEnabled(false); // TODO WHAT IS THIS? WHY DISABLED?
 								
+								toJson+="},";
+								json.append("sensor", new JSONObject(toJson) );
+
 								scrollPane.setViewportView(textArea);
 								contentPane.add(scrollPane);
 
 								break;
 						}
 					}
-
+					System.out.println("--------------------------------------------------");
+					System.out.println(json);
 					doc.getDocumentElement().normalize();
 				} catch (ParserConfigurationException e) {
 					throw new RuntimeException(e);
