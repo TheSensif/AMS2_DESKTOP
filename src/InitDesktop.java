@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -25,14 +27,26 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import java.awt.event.InputEvent;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.handshake.ServerHandshake;
 import org.json.*;
 
 public class InitDesktop extends JFrame {
 	private static InitDesktop frame;
+	private WebSocketClient cc;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
 	private Boolean activated;
@@ -105,6 +119,37 @@ public class InitDesktop extends JFrame {
 		
 	}
 	
+	public static byte[] jsonToBytes (JSONObject obj) {
+        byte[] result = null;
+        try {
+            // Transforma l'objecte a bytes[]
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj.toString());
+            oos.flush();
+            result = bos.toByteArray();
+        } catch (IOException e) { e.printStackTrace(); }
+        return result;
+    }
+
+	public String bytesToObject (ByteBuffer arr) {
+        String result = "error";
+        try {
+            // Transforma el ByteButter en byte[]
+            byte[] bytesArray = new byte[arr.remaining()];
+            arr.get(bytesArray, 0, bytesArray.length);
+
+            // Transforma l'array de bytes en objecte
+            ByteArrayInputStream in = new ByteArrayInputStream(bytesArray);
+            ObjectInputStream is = new ObjectInputStream(in);
+            return (String) is.readObject();
+
+        } catch (ClassNotFoundException e) { e.printStackTrace();
+        } catch (UnsupportedEncodingException e) { e.printStackTrace();
+        } catch (IOException e) { e.printStackTrace(); }
+        return result;
+    }
+
 	private void openFile() { // Open ChoserFile for .xml
 		HashMap<String,DataModule> dm = new HashMap<>();
 		//Generating a filter for the file
@@ -211,22 +256,6 @@ public class InitDesktop extends JFrame {
 					//Update the panel view
 					contentPane.revalidate();
 					contentPane.repaint();
-
-					// JPanel switchs=new JPanel();
-					// switchs.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
-
-					// JPanel sliders=new JPanel();
-					// sliders.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
-
-					// JPanel dropdowns=new JPanel();
-					// dropdowns.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
-
-					// JPanel sensors=new JPanel();
-					// sensors.setLayout(new BoxLayout(switchs, BoxLayout.Y_AXIS));
-
-					// contentPane.add(switchs);
-					// contentPane.add(sliders);
-					
 					
 					for (int i = 0; i < dm.size(); i++) {		
 						//We will look to get the component id with its tagName
@@ -357,6 +386,48 @@ public class InitDesktop extends JFrame {
 					System.out.println("--------------------------------------------------");
 					System.out.println(json);
 					doc.getDocumentElement().normalize();
+
+					try {
+						cc = new WebSocketClient(new URI("ws://127.0.0.1:8888"), (Draft) new Draft_6455()) {
+							@Override
+							public void onMessage(String message) {
+								
+							}
+
+							@Override
+							public void onMessage(ByteBuffer message) {
+								String tempString= bytesToObject(message);
+								JSONObject tempJson=new JSONObject(tempString);
+								// TODO update value
+								System.out.println("RECIVING NEW VALUE:");
+								System.out.println(tempJson);
+							}
+		  
+							@Override
+							public void onOpen(ServerHandshake handshake) {
+							  System.out.println("CONNECTED");
+								cc.send(jsonToBytes(json));
+								
+							}
+		  
+							@Override
+							public void onClose(int code, String reason, boolean remote) {
+								
+							}
+		  
+							@Override
+							public void onError(Exception ex) {
+								
+							}
+						};
+		  
+						
+						cc.connect();
+					  } catch (URISyntaxException ex) {
+						System.out.println("Error Connection:"+ex);
+					  }
+
+
 				} catch (ParserConfigurationException e) {
 					throw new RuntimeException(e);
 				} catch (IOException e) {
