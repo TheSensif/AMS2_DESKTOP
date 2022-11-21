@@ -1,11 +1,12 @@
 import database.Database;
+import modules.DataModule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import modules.DataModule;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -33,8 +34,12 @@ import java.util.Objects;
 public class InitDesktop extends JFrame {
 	private static InitDesktop frame;
 	private JPanel contentPane;
-	private JScrollPane scrollPane;
 	private Boolean activated;
+	private JPanel sensorPanel;
+	private JPanel dropdownPanel;
+	private JPanel sliderPanel;
+	private JPanel switchPanel;
+
 
 	/**
 	 * Launch the application.
@@ -60,9 +65,9 @@ public class InitDesktop extends JFrame {
 	 * Create the frame.
 	 */
 	public InitDesktop() throws IOException {
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 550, 300);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -90,20 +95,43 @@ public class InitDesktop extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new GridLayout(2, 2));
 		setContentPane(contentPane);
+		
+		switchPanel = new JPanel();
+		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(switchPanel);
 
-		
-		
+
+		sliderPanel = new JPanel();
+		sliderPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(sliderPanel);
+
+		dropdownPanel = new JPanel();
+		dropdownPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(dropdownPanel);
+
+		sensorPanel = new JPanel();
+		sensorPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(sensorPanel);
+
+
+
 	}
-	
+
 	private void openFile() { // Open ChoserFile for .xml
+
 		HashMap<String,DataModule> dm = new HashMap<>();
+
 		//Generating a filter for the file
 		JFileChooser jf = new JFileChooser(System.getProperty("user.dir"));
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("XML Files","xml");
 		jf.setFileFilter(filtro);
 		jf.showOpenDialog(this);
 		File archivo = jf.getSelectedFile();
-		
+
+		contentPane.removeAll();
+
+		dm.clear();
+
 		if (archivo != null) {
 			String name = archivo.getName();
 			String [] part = name.split("\\.");
@@ -147,7 +175,7 @@ public class InitDesktop extends JFrame {
 						System.out.println(dm);
 
 					}
-					
+
 					//We will store this element on a Datamodule if it exists
 					NodeList dropdown = doc.getElementsByTagName("dropdown");
 					if (dropdown.getLength() != 0) {
@@ -188,28 +216,27 @@ public class InitDesktop extends JFrame {
 						}
 
 					}
-					
+
 					ArrayList<String> componentes = new ArrayList<>();
-				
+
 
 					//We will create an array with the length of the quantity of the components
 					//The array will be the quanity but with formated to string, to match the information that the XML provides
 					for (int i = 0; i < dm.size(); i++) {
 						componentes.add(String.valueOf(i));
 					}
-					
+
 					//Update the panel view
 					contentPane.revalidate();
 					contentPane.repaint();
 
-					
-					for (int i = 0; i < dm.size(); i++) {		
+
+					for (int i = 0; i < dm.size(); i++) {
 						//We will look to get the component id with its tagName
 						//Depending on the tagname it will create a diferent component
 						switch (dm.get(componentes.get(i)).getEtiqueta()) {
 							case "switch":
-								scrollPane = new JScrollPane();
-								
+								JLabel labelSwitch = new JLabel(dm.get(componentes.get(i)).getName());
 								JToggleButton tglbtn = new JToggleButton("");
 								//We will get the inital state specified on the xml
 								if ((dm.get(componentes.get(i)).getDefaul().equals("on"))) {
@@ -220,9 +247,9 @@ public class InitDesktop extends JFrame {
 									tglbtn.setText("Not active");
 
 								}
-								
+
 								tglbtn.addActionListener(new ActionListener() {
-									
+
 									//Changing its state every time its pressed
 									public void actionPerformed(ActionEvent e) {
 										if (activated == true) {
@@ -237,23 +264,37 @@ public class InitDesktop extends JFrame {
 										}
 									}
 								});;
-								scrollPane.setViewportView(tglbtn);
-								contentPane.add(scrollPane);
-								
-								break;
-							case "slider":
-								JSlider jSlider = new JSlider();
-								scrollPane = new JScrollPane();
+								switchPanel.add(labelSwitch);
+								switchPanel.add(tglbtn);
+								contentPane.add(switchPanel);
 
+								break;
+
+							case "slider":
+								JLabel labelSlider = new JLabel(dm.get(componentes.get(i)).getName());
+								JSlider jSlider = new JSlider(dm.get(componentes.get(i)).getMin(),dm.get(componentes.get(i)).getMax(),Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
+								jSlider.setPaintTicks(true);
+								jSlider.setMajorTickSpacing(1);
+								jSlider.setMinorTickSpacing(1);
+								jSlider.setPaintLabels(true);
 								//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
-								jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
-								scrollPane.setViewportView(jSlider);
-								contentPane.add(scrollPane);
+								//jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
+								//jSlider.setMinimum(dm.get(componentes.get(i)).getMin());
+
+
+
+								//jSlider.setMaximum(dm.get(componentes.get(i)).getMax());
+								//System.out.println(jSlider.getMaximum());
+
+
+								sliderPanel.add(labelSlider);
+								sliderPanel.add(jSlider);
+								contentPane.add(sliderPanel);
 
 								break;
 							case "dropdown":
+								JLabel label = new JLabel(dm.get(componentes.get(i)).getLabel() + ":");
 								JComboBox comboBox = new JComboBox();
-								scrollPane = new JScrollPane();
 
 								//Creating an arraylist with the keys of the hashmap
 								ArrayList<String> dropdownKeys = new ArrayList<>();
@@ -276,23 +317,26 @@ public class InitDesktop extends JFrame {
 									}
 									
 								}
-								
-								scrollPane.setViewportView(comboBox);
-								contentPane.add(scrollPane);
+
+								dropdownPanel.add(label);
+								dropdownPanel.add(comboBox);
+								contentPane.add(dropdownPanel);
 								break;
 							case "sensor":
 								JTextArea textArea = new JTextArea();
-								scrollPane = new JScrollPane();
+
 								//The sensor will be a textArea with the specified units
 								textArea.setText(dm.get(componentes.get(i)).getUnits());
 								//Enabled at false to not let the user modify it
 								textArea.setEnabled(false);
 								
-								scrollPane.setViewportView(textArea);
-								contentPane.add(scrollPane);
+								sensorPanel.add(textArea);
+								contentPane.add(sensorPanel);
 
 								break;
 						}
+						contentPane.revalidate();
+						contentPane.repaint();
 					}
 
 					doc.getDocumentElement().normalize();
