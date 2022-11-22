@@ -49,6 +49,11 @@ public class InitDesktop extends JFrame {
 	private WebSocketClient cc;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
+
+	private JPanel sensorPanel;
+	private JPanel dropdownPanel;
+	private JPanel sliderPanel;
+	private JPanel switchPanel;
 	private Boolean activated;
 	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
 
@@ -86,7 +91,7 @@ public class InitDesktop extends JFrame {
 	public InitDesktop() throws IOException {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 450);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -114,7 +119,22 @@ public class InitDesktop extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new GridLayout(2, 2));
 		setContentPane(contentPane);
+		switchPanel = new JPanel();
+		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(switchPanel);
 
+
+		sliderPanel = new JPanel();
+		sliderPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(sliderPanel);
+
+		dropdownPanel = new JPanel();
+		dropdownPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(dropdownPanel);
+
+		sensorPanel = new JPanel();
+		sensorPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		contentPane.add(sensorPanel);
 		
 		
 	}
@@ -220,7 +240,7 @@ public class InitDesktop extends JFrame {
 										values.put(eo.getAttribute("value"), eo.getTextContent());
 									}
 								}
-								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),values);
+								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getAttribute("label"),values);
 								dm.put(e.getAttribute("id"),id);
 							}
 							System.out.println(dm);
@@ -264,10 +284,9 @@ public class InitDesktop extends JFrame {
 
 						switch (dm.get(componentes.get(i)).getEtiqueta()) {
 							case "switch":
-								scrollPane = new JScrollPane();
-								
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 
+								JLabel labelSwitch = new JLabel(dm.get(componentes.get(i)).getName());
 								JToggleButton tglbtn = new JToggleButton("");
 								//We will get the inital state specified on the xml
 								if ((dm.get(componentes.get(i)).getDefaul().equals("on"))) {
@@ -300,13 +319,18 @@ public class InitDesktop extends JFrame {
 
 								toJson+="},";
 								json.append("switch", new JSONObject(toJson) );
-								scrollPane.setViewportView(tglbtn);
-								contentPane.add(scrollPane);
+								switchPanel.add(labelSwitch);
+								switchPanel.add(tglbtn);
+								contentPane.add(switchPanel);
 								
 								break;
 							case "slider":
-								JSlider jSlider = new JSlider();
-								scrollPane = new JScrollPane();
+								JLabel labelSlider = new JLabel(dm.get(componentes.get(i)).getName());
+								JSlider jSlider = new JSlider(dm.get(componentes.get(i)).getMin(),dm.get(componentes.get(i)).getMax(),Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
+								jSlider.setPaintTicks(true);
+								jSlider.setMajorTickSpacing(1);
+								jSlider.setMinorTickSpacing(1);
+								jSlider.setPaintLabels(true);
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 
@@ -321,13 +345,14 @@ public class InitDesktop extends JFrame {
 								toJson+="},";
 								json.append("slider", new JSONObject(toJson) );
 
-								scrollPane.setViewportView(jSlider);
-								contentPane.add(scrollPane);
+								sliderPanel.add(labelSlider);
+								sliderPanel.add(jSlider);
+								contentPane.add(sliderPanel);
 
 								break;
 							case "dropdown":
+								JLabel label = new JLabel(dm.get(componentes.get(i)).getLabel() + ":");
 								JComboBox comboBox = new JComboBox();
-								scrollPane = new JScrollPane();
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 								toJson+="'default':"+dm.get(componentes.get(i)).getDefaul()+",";
@@ -361,12 +386,12 @@ public class InitDesktop extends JFrame {
 								}
 								toJson+="]},";
 								json.append("dropdown", new JSONObject(toJson) );
-								scrollPane.setViewportView(comboBox);
-								contentPane.add(scrollPane);
+								dropdownPanel.add(label);
+								dropdownPanel.add(comboBox);
+								contentPane.add(dropdownPanel);
 								break;
 							case "sensor":
 								JTextArea textArea = new JTextArea();
-								scrollPane = new JScrollPane();
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 
@@ -382,8 +407,8 @@ public class InitDesktop extends JFrame {
 								toJson+="},";
 								json.append("sensor", new JSONObject(toJson) );
 
-								scrollPane.setViewportView(textArea);
-								contentPane.add(scrollPane);
+								sensorPanel.add(textArea);
+								contentPane.add(sensorPanel);
 
 								break;
 						}
@@ -447,3 +472,4 @@ public class InitDesktop extends JFrame {
 		}
 	}
 }
+
