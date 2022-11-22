@@ -279,7 +279,7 @@ public class InitDesktop extends JFrame {
 									tglbtn.setText("Not active");
 									toJson+="'default':false,";
 								}
-								
+								toJson+="'name':"+dm.get(componentes.get(i)).getName()+",";
 								tglbtn.addActionListener(new ActionListener() {
 									
 									//Changing its state every time its pressed
@@ -310,7 +310,10 @@ public class InitDesktop extends JFrame {
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 
-								toJson+="'default':"+Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue()+",";
+								toJson+="'default':"+Double.valueOf((dm.get(componentes.get(i)).getDefaul()))+",";
+								toJson+="'min':"+dm.get(componentes.get((i))).getMin()+",";
+								toJson+="'max':"+dm.get(componentes.get((i))).getMax()+",";
+								toJson+="'step':"+dm.get(componentes.get((i))).getStep()+",";
 
 								//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
 								jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
@@ -327,6 +330,7 @@ public class InitDesktop extends JFrame {
 								scrollPane = new JScrollPane();
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+								toJson+="'default':"+dm.get(componentes.get(i)).getDefaul()+",";
 								toJson+="'values':[";
 								// TODO ¿??¿?¿?¿?¿?¿? need key and value
 								//Creating an arraylist with the keys of the hashmap
@@ -368,8 +372,9 @@ public class InitDesktop extends JFrame {
 
 								//The sensor will be a textArea with the specified units
 								textArea.setText(dm.get(componentes.get(i)).getUnits());
-
 								toJson+="'units':"+dm.get(componentes.get(i)).getUnits()+",";
+								toJson+="'thresholdlow':"+dm.get(componentes.get(i)).getThresholdlow()+",";
+								toJson+="'thresholdhigh':"+dm.get(componentes.get(i)).getThresholdhigh()+",";
 
 								//Enabled at false to not let the user modify it
 								textArea.setEnabled(false); // TODO WHAT IS THIS? WHY DISABLED?
