@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class Database {
 
     public static void startDatabase() throws SQLException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        String filePath = System.getProperty("user.dir") + "/src/database/database.db";
+        String filePath = System.getProperty("user.dir") + "/database/database.db";
         // Conectar
 
         File fDatabase = new File(filePath);

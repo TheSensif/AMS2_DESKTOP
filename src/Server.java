@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.sql.Connection;
@@ -27,8 +28,10 @@ import database.UtilsSQLite;
 public class Server extends WebSocketServer {
 
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    private ByteBuffer configurationData;
+    private ByteBuffer configurationData=null;
+    private ByteBuffer changeValue=null;
     private static boolean running = true;
+    private WebSocket desktop;
 
     public static void main(String[] args)  throws InterruptedException, IOException {
         int port = 8888; 
@@ -64,6 +67,7 @@ public class Server extends WebSocketServer {
         // SEND INFO!!!!
         if(conn.getRemoteSocketAddress().getAddress().getHostAddress().equalsIgnoreCase("127.0.0.1")){
             System.out.println("YOU'RE THE DESKTOP!!!!");
+            this.desktop=conn;
             
         }
         else{
@@ -92,7 +96,10 @@ public class Server extends WebSocketServer {
                 
             }
         }
-        else if(message=="requestConfiguration"){
+        else if(message.equalsIgnoreCase("requestConfiguration")){
+            if(this.configurationData==null){conn.send("ERROR");}
+            System.out.println("Sending config");
+            System.out.println(this.configurationData);
             conn.send(this.configurationData);
         }else{
             String[] param=message.split("&");
@@ -151,7 +158,8 @@ public class Server extends WebSocketServer {
         }
         else{
             System.out.println("Sending configuration...");
-            // conn.send(this.configurationData);
+            // conn.send(this.configurationData); // this maybe not neccesary, or we can use for change values
+            desktop.send(message);
         }
 
         
