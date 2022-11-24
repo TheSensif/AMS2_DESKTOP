@@ -36,19 +36,8 @@ public class Database {
 
             // date: strftime('%Y-%m-%d %H:%M')
 
-            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS switchs (" +
-                    "controls varchar(15) NOT NULL,id INTEGER NOT NULL,value varchar(3), date TIMESTAMP NOT NULL, PRIMARY KEY(controls,id));");
-
-            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS sliders (" +
-                    "controls varchar(15) NOT NULL,id INTEGER NOT NULL,value varchar(3), date TIMESTAMP NOT NULL, PRIMARY KEY(controls,id));");
-
-            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS dropdowns (" +
-                    "controls varchar(15) NOT NULL,id INTEGER NOT NULL,value varchar(3), date TIMESTAMP NOT NULL, PRIMARY KEY(controls,id));");
-
-            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS sensor (" +
-                    "controls varchar(15) NOT NULL,id INTEGER NOT NULL,value varchar(3), date TIMESTAMP NOT NULL, PRIMARY KEY(controls,id));");
-
-
+            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS snaptshots (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,json JSON NOT NULL,date TIMESTAMP NOT NULL,name varchar(15));");
 
             // Create user
 
