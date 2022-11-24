@@ -37,7 +37,7 @@ public class Database {
             // date: strftime('%Y-%m-%d %H:%M')
 
             UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS snaptshots (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT,json JSON NOT NULL,date TIMESTAMP NOT NULL,name varchar(15));");
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,json JSON NOT NULL,date TIMESTAMP NOT NULL,name varchar(15) NOT NULL UNIQUE);");
 
             // Create user
 

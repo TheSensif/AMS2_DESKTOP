@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -49,7 +50,20 @@ public class UtilsSQLite {
         try {
             Statement stmt = conn.createStatement();
             result = stmt.executeUpdate(sql);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int sqlSnapshots (Connection conn, String sql) {
+        int result = 0;
+        try {
+            Statement stmt = conn.createStatement();
+            result = stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Name exist","WARNING",JOptionPane.WARNING_MESSAGE);
+        }
         return result;
     }
 

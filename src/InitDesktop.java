@@ -432,7 +432,7 @@ public class InitDesktop extends JFrame {
 							Connection conn = UtilsSQLite.connect(System.getProperty("user.dir") + "/src/database/database.db");
 							String name;
 							name = JOptionPane.showInputDialog("Name save snapshot: ");
-							UtilsSQLite.queryUpdate(conn,"INSERT INTO save (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
+							UtilsSQLite.sqlSnapshots(conn,"INSERT INTO snaptshots (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
 							UtilsSQLite.disconnect(conn);
 						}
 					});
