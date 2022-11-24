@@ -1,6 +1,7 @@
 import database.Database;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -171,6 +172,7 @@ public class InitDesktop extends JFrame {
     }
 
 	private void openFile() { // Open ChoserFile for .xml
+		//HashMap<String,HashMap> blocks=new HashMap<>();
 		HashMap<String,DataModule> dm = new HashMap<>();
 		//Generating a filter for the file
 		JFileChooser jf = new JFileChooser(System.getProperty("user.dir"));
@@ -190,6 +192,27 @@ public class InitDesktop extends JFrame {
 					db = dbf.newDocumentBuilder();
 					Document doc = db.parse(archivo);
 
+					// TODO make for what contains all bellow
+
+					// ERROR CONTROL FOR BLOCKS;
+					//	ArrayList<String> BlocksPKS=new ArrayList<String>();
+					// For in blocks{
+						//Element e = (Element) node;
+						// NamedNodeMap attrb = e.getAttributes();
+						// if(attrb.getNamedItem("name")==null || attrb.getNamedItem("default")==null){
+							
+						// 	JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+						// 	return;
+						// };
+						//if(BlocksPKS.contains(e.getAttribute("id"))){
+						// 	JOptionPane.showMessageDialog(null," It is not an valid xml IDs repeated","Error",JOptionPane.ERROR_MESSAGE);
+						// 	return;
+						// }
+						// BlocksPKS.add(e.getAttribute("id"));
+					//}
+
+						ArrayList<String> PKS=new ArrayList<String>();
+
 					//We will store this element on a Datamodule if it exists
 					NodeList switc = doc.getElementsByTagName("switch");
 					if ( switc.getLength() != 0) {
@@ -198,6 +221,23 @@ public class InitDesktop extends JFrame {
 
 							if (node.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) node;
+								NamedNodeMap attrb = e.getAttributes();
+								if(attrb.getNamedItem("id")==null || attrb.getNamedItem("default")==null){
+									
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								};
+								if(attrb.getNamedItem("default").getNodeValue().equals("on")==false && attrb.getNamedItem("default").getNodeValue().equals("off")==false){
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								
+								if(PKS.contains(e.getAttribute("id"))){
+									JOptionPane.showMessageDialog(null," It is not an valid xml IDs repeated","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								PKS.add(e.getAttribute("id"));
+
 								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getTextContent());
 
 								dm.put(e.getAttribute("id"),id);
@@ -215,6 +255,25 @@ public class InitDesktop extends JFrame {
 
 							if (node.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) node;
+								NamedNodeMap attrb = e.getAttributes();
+								if(attrb.getNamedItem("id")==null || attrb.getNamedItem("default")==null || attrb.getNamedItem("min")==null || attrb.getNamedItem("max")==null || attrb.getNamedItem("step")==null){
+									
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								};
+								if(Integer.valueOf(attrb.getNamedItem("min").getNodeValue()) > Integer.valueOf(attrb.getNamedItem("max").getNodeValue())){
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								if(Double.valueOf(attrb.getNamedItem("default").getNodeValue()) > Double.valueOf(attrb.getNamedItem("max").getNodeValue()) || Double.valueOf(attrb.getNamedItem("default").getNodeValue()) < Double.valueOf(attrb.getNamedItem("min").getNodeValue())){
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								if(PKS.contains(e.getAttribute("id"))){
+									JOptionPane.showMessageDialog(null," It is not an valid xml IDs repeated","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								PKS.add(e.getAttribute("id"));
 								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),Integer.parseInt(e.getAttribute("min")),Integer.parseInt(e.getAttribute("max")),e.getAttribute("step"),e.getTextContent());
 								dm.put(e.getAttribute("id"),id);
 							}
@@ -231,15 +290,45 @@ public class InitDesktop extends JFrame {
 
 							if (node.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) node;
+
+								NamedNodeMap attrb = e.getAttributes();
+								if(attrb.getNamedItem("id")==null || attrb.getNamedItem("default")==null){
+									
+									JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								};
+
 								HashMap<String,String> values = new HashMap();
 								NodeList option = doc.getElementsByTagName("option");
+
+								ArrayList<String> DropPKS=new ArrayList<String>();
+
+								if(e.getElementsByTagName("option").getLength()==0){
+									
+									JOptionPane.showMessageDialog(null," It is not an valid xml; DropDown options EMPTY!","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								};
+
 								for (int j = 0; j < e.getElementsByTagName("option").getLength(); j++) {
 									Node nodeOption = option.item(j);
 									if (nodeOption.getNodeType() == Node.ELEMENT_NODE) {
 										Element eo = (Element) nodeOption;
+
+										
+										if(eo.getAttribute("value")==null || DropPKS.contains(eo.getAttribute("value"))){
+									
+											JOptionPane.showMessageDialog(null," It is not an valid xml; DropDown values Error","Error",JOptionPane.ERROR_MESSAGE);
+											return;
+										};
+										DropPKS.add(eo.getAttribute("value"));
 										values.put(eo.getAttribute("value"), eo.getTextContent());
 									}
 								}
+								if(PKS.contains(e.getAttribute("id"))){
+									JOptionPane.showMessageDialog(null," It is not an valid xml IDs repeated","Error",JOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								PKS.add(e.getAttribute("id"));
 								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getAttribute("label"),values);
 								dm.put(e.getAttribute("id"),id);
 							}
@@ -254,6 +343,22 @@ public class InitDesktop extends JFrame {
 
 								if (node.getNodeType() == Node.ELEMENT_NODE) {
 									Element e = (Element) node;
+									NamedNodeMap attrb = e.getAttributes();
+									if(attrb.getNamedItem("id")==null || attrb.getNamedItem("units")==null || attrb.getNamedItem("thresholdhigh")==null || attrb.getNamedItem("thresholdlow")==null ){
+										
+										JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
+										return;
+									};
+									if(Double.valueOf(attrb.getNamedItem("thresholdhigh").getNodeValue()) > Double.valueOf(attrb.getNamedItem("thresholdlow").getNodeValue())){
+										JOptionPane.showMessageDialog(null," It is not an valid xml threshold error","Error",JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+									if(PKS.contains(e.getAttribute("id"))){
+										JOptionPane.showMessageDialog(null," It is not an valid xml IDs repeated","Error",JOptionPane.ERROR_MESSAGE);
+										return;
+									}
+
+									PKS.add(e.getAttribute("id"));
 									DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("units"),Integer.parseInt(e.getAttribute("thresholdlow")),Integer.parseInt(e.getAttribute("thresholdhigh")),e.getTextContent());
 									dm.put(e.getAttribute("id"),id);
 								}
