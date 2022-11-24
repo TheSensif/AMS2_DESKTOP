@@ -45,10 +45,15 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.*;
 
 public class InitDesktop extends JFrame {
+	private File archivo;
 	private static InitDesktop frame;
 	private WebSocketClient cc;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
+
+	private JMenuBar menuBar;
+	private JMenu mnArchivo,mnVisualizacion;
+	private JMenuItem mntmCargarConfiguracion, snapshot;
 
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
@@ -93,13 +98,13 @@ public class InitDesktop extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 450);
 		
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnArchivo = new JMenu("File");
+		mnArchivo = new JMenu("File");
 		menuBar.add(mnArchivo);
 		
-		JMenuItem mntmCargarConfiguracion = new JMenuItem("Charge configuration");
+		mntmCargarConfiguracion = new JMenuItem("Charge configuration");
 		//Charging the icon
 		// BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
 		// Image icon = bi.getScaledInstance(16,16,Image.SCALE_SMOOTH);
@@ -111,9 +116,14 @@ public class InitDesktop extends JFrame {
 		});
 		mntmCargarConfiguracion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		mnArchivo.add(mntmCargarConfiguracion);
-		
-		
-		JMenu mnVisualizacion = new JMenu("Visualization");
+
+		snapshot = new JMenuItem("SNAPSHOT ");
+
+		snapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnArchivo.add(snapshot);
+		snapshot.setEnabled(false);
+
+		mnVisualizacion = new JMenu("Visualization");
 		menuBar.add(mnVisualizacion);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -177,7 +187,7 @@ public class InitDesktop extends JFrame {
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("XML Files","xml");
 		jf.setFileFilter(filtro);
 		jf.showOpenDialog(this);
-		File archivo = jf.getSelectedFile();
+		archivo = jf.getSelectedFile();
 		
 		if (archivo != null) {
 			String name = archivo.getName();
@@ -413,6 +423,15 @@ public class InitDesktop extends JFrame {
 								break;
 						}
 					}
+					snapshot.setEnabled(true);
+
+					snapshot.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							
+						}
+					});
+
 					System.out.println("--------------------------------------------------");
 					System.out.println(json);
 					doc.getDocumentElement().normalize();
