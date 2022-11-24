@@ -349,7 +349,7 @@ public class InitDesktop extends JFrame {
 										JOptionPane.showMessageDialog(null," It is not an valid xml","Error",JOptionPane.ERROR_MESSAGE);
 										return;
 									};
-									if(Double.valueOf(attrb.getNamedItem("thresholdhigh").getNodeValue()) > Double.valueOf(attrb.getNamedItem("thresholdlow").getNodeValue())){
+									if(Double.valueOf(attrb.getNamedItem("thresholdhigh").getNodeValue()) < Double.valueOf(attrb.getNamedItem("thresholdlow").getNodeValue())){
 										JOptionPane.showMessageDialog(null," It is not an valid xml threshold error","Error",JOptionPane.ERROR_MESSAGE);
 										return;
 									}

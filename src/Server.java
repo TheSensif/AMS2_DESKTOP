@@ -159,6 +159,7 @@ public class Server extends WebSocketServer {
         else{
             System.out.println("Sending configuration...");
             // conn.send(this.configurationData); // this maybe not neccesary, or we can use for change values
+            System.out.println("Change value JSON recived, sending....");
             desktop.send(message);
         }
 
