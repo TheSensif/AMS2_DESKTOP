@@ -51,6 +51,10 @@ public class DataModule {
         this.name = nom;
     }
 
+    //This will be the contrsuctor used when we want to create a block Hashmap
+    public DataModule(String name) {
+    }
+
     public String getId() {
         return id;
     }

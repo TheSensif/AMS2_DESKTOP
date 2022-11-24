@@ -48,22 +48,15 @@ public class InitDesktop extends JFrame {
 	private static InitDesktop frame;
 	private WebSocketClient cc;
 	private JPanel contentPane;
-	private JScrollPane scrollPane;
 
+	private JScrollPane scrollPane;
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
 	private JPanel sliderPanel;
 	private JPanel switchPanel;
+	private JPanel blockPanel;
 	private Boolean activated;
 	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
-
-	//JSON manage method
-	//String jsonString = "{'pageInfo': {'pageName': 'abc','pagePic':'http://example.com/content.jpg'}}"; //assign your JSON String here
-	// JSONObject obj = new JSONObject(jsonString);
-	// String pageName = obj.getJSONObject("pageInfo").getString("pageName");
-	// System.out.println(pageName);
-
-	// if we use arrays we gonna usa json.append(key, value)
 
 	/**
 	 * Launch the application.
@@ -119,24 +112,7 @@ public class InitDesktop extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new GridLayout(2, 2));
 		setContentPane(contentPane);
-		switchPanel = new JPanel();
-		switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		contentPane.add(switchPanel);
 
-
-		sliderPanel = new JPanel();
-		sliderPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		contentPane.add(sliderPanel);
-
-		dropdownPanel = new JPanel();
-		dropdownPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		contentPane.add(dropdownPanel);
-
-		sensorPanel = new JPanel();
-		sensorPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		contentPane.add(sensorPanel);
-		
-		
 	}
 	
 	public static byte[] jsonToBytes (JSONObject obj) {
@@ -171,7 +147,8 @@ public class InitDesktop extends JFrame {
     }
 
 	private void openFile() { // Open ChoserFile for .xml
-		HashMap<String,DataModule> dm = new HashMap<>();
+		HashMap<String,HashMap> generalData = new HashMap<>();
+
 		//Generating a filter for the file
 		JFileChooser jf = new JFileChooser(System.getProperty("user.dir"));
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("XML Files","xml");
@@ -190,229 +167,302 @@ public class InitDesktop extends JFrame {
 					db = dbf.newDocumentBuilder();
 					Document doc = db.parse(archivo);
 
-					//We will store this element on a Datamodule if it exists
-					NodeList switc = doc.getElementsByTagName("switch");
-					if ( switc.getLength() != 0) {
-						for (int i = 0; i < switc.getLength(); i++) {
-							Node node = switc.item(i);
 
-							if (node.getNodeType() == Node.ELEMENT_NODE) {
-								Element e = (Element) node;
-								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getTextContent());
+					NodeList control = doc.getElementsByTagName("controls");
+					if (control.getLength() != 0) {
+						for (int i = 0; i < control.getLength(); i++) {
+							HashMap<String,DataModule> dm = new HashMap<>();
+							int quantityElements = 0;
+							Node nodeControl = control.item(i);
+							if (nodeControl.getNodeType() == Node.ELEMENT_NODE) {
+								Element e = (Element) nodeControl;
+								//We will store the data of the diferents components
+								NodeList switc = e.getElementsByTagName("switch");
+								NodeList slider = e.getElementsByTagName("slider");
+								NodeList dropdown = e.getElementsByTagName("dropdown");
+								NodeList sensor = e.getElementsByTagName("sensor");
 
-								dm.put(e.getAttribute("id"),id);
-							}
-						}
+								generalData.put(e.getAttribute("name"),dm);
 
-						System.out.println(dm);
-					}
+								blockPanel = new JPanel();
+								blockPanel.setBorder(BorderFactory.createLineBorder(Color.magenta));
 
-					//We will store this element on a Datamodule if it exists
-					NodeList slider = doc.getElementsByTagName("slider");
-					if (slider.getLength() != 0) {
-						for (int i = 0; i < slider.getLength(); i++) {
-							Node node = slider.item(i);
+								contentPane.add(blockPanel);
 
-							if (node.getNodeType() == Node.ELEMENT_NODE) {
-								Element e = (Element) node;
-								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),Integer.parseInt(e.getAttribute("min")),Integer.parseInt(e.getAttribute("max")),e.getAttribute("step"),e.getTextContent());
-								dm.put(e.getAttribute("id"),id);
-							}
-						}
-						System.out.println(dm);
+								switchPanel = new JPanel();
 
-					}
-					
-					//We will store this element on a Datamodule if it exists
-					NodeList dropdown = doc.getElementsByTagName("dropdown");
-					if (dropdown.getLength() != 0) {
-						for (int i = 0; i < dropdown.getLength(); i++) {
-							Node node = dropdown.item(i);
+								sliderPanel = new JPanel();
 
-							if (node.getNodeType() == Node.ELEMENT_NODE) {
-								Element e = (Element) node;
-								HashMap<String,String> values = new HashMap();
-								NodeList option = doc.getElementsByTagName("option");
-								for (int j = 0; j < e.getElementsByTagName("option").getLength(); j++) {
-									Node nodeOption = option.item(j);
-									if (nodeOption.getNodeType() == Node.ELEMENT_NODE) {
-										Element eo = (Element) nodeOption;
-										values.put(eo.getAttribute("value"), eo.getTextContent());
+								dropdownPanel = new JPanel();
+
+								sensorPanel = new JPanel();
+
+
+
+								//SWITCH
+								for (int j= 0; j < switc.getLength(); j++) {
+									Node node = switc.item(j);
+
+									if (node.getNodeType() == Node.ELEMENT_NODE) {
+										Element el = (Element) node;
+										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("default"),el.getTextContent());
+
+										dm.put(el.getAttribute("id"),id);
 									}
 								}
-								DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("default"),e.getAttribute("label"),values);
-								dm.put(e.getAttribute("id"),id);
-							}
-							System.out.println(dm);
-						}
 
-						//We will store this element on a Datamodule if it exists
-						NodeList sensor = doc.getElementsByTagName("sensor");
-						if (sensor.getLength() != 0) {
-							for (int i = 0; i < sensor.getLength(); i++) {
-								Node node = sensor.item(i);
+								//SLIDER
+								for (int j= 0; j < slider.getLength(); j++) {
+									Node node = slider.item(j);
 
-								if (node.getNodeType() == Node.ELEMENT_NODE) {
-									Element e = (Element) node;
-									DataModule id = new DataModule(e.getTagName(),e.getAttribute("id"),e.getAttribute("units"),Integer.parseInt(e.getAttribute("thresholdlow")),Integer.parseInt(e.getAttribute("thresholdhigh")),e.getTextContent());
-									dm.put(e.getAttribute("id"),id);
+									if (node.getNodeType() == Node.ELEMENT_NODE) {
+										Element el = (Element) node;
+										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("default"),Integer.parseInt(el.getAttribute("min")),Integer.parseInt(el.getAttribute("max")),el.getAttribute("step"),el.getTextContent());
+
+										dm.put(el.getAttribute("id"),id);
+									}
 								}
-							}
-							System.out.println(dm);
 
-						}
+								//DROPDOWN
+								for (int j= 0; j < dropdown.getLength(); j++) {
+									Node node = dropdown.item(j);
 
-					}
-					
-					ArrayList<String> componentes = new ArrayList<>();
-				
-
-					//We will create an array with the length of the quantity of the components
-					//The array will be the quanity but with formated to string, to match the information that the XML provides
-					for (int i = 0; i < dm.size(); i++) {
-						componentes.add(String.valueOf(i));
-					}
-					
-					//Update the panel view
-					contentPane.revalidate();
-					contentPane.repaint();
-					
-					for (int i = 0; i < dm.size(); i++) {		
-						//We will look to get the component id with its tagName
-						//Depending on the tagname it will create a diferent component
-						String toJson="{";
-
-						switch (dm.get(componentes.get(i)).getEtiqueta()) {
-							case "switch":
-								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
-
-								JLabel labelSwitch = new JLabel(dm.get(componentes.get(i)).getName());
-								JToggleButton tglbtn = new JToggleButton("");
-								//We will get the inital state specified on the xml
-								if ((dm.get(componentes.get(i)).getDefaul().equals("on"))) {
-									activated = true;
-									tglbtn.setText("Active");
-									toJson+="'default':true,";
-								} else {
-									activated = false;
-									tglbtn.setText("Not active");
-									toJson+="'default':false,";
-								}
-								toJson+="'name':"+dm.get(componentes.get(i)).getName()+",";
-								tglbtn.addActionListener(new ActionListener() {
-									
-									//Changing its state every time its pressed
-									public void actionPerformed(ActionEvent e) {
-										if (activated == true) {
-											tglbtn.setText("Not active");
-											tglbtn.disable();
-											activated = false;
+									if (node.getNodeType() == Node.ELEMENT_NODE) {
+										Element el = (Element) node;
+										HashMap<String, String> values = new HashMap();
+										//REVISAR ESTE NODELIST
+										NodeList option = e.getElementsByTagName("option");
+										for (int k = 0; k < e.getElementsByTagName("option").getLength(); k++) {
+											Node nodeOption = option.item(k);
+											if (nodeOption.getNodeType() == Node.ELEMENT_NODE) {
+												Element eo = (Element) nodeOption;
+												values.put(eo.getAttribute("value"), eo.getTextContent());
+											}
 										}
-										else {
-											tglbtn.setText("Active");
-											tglbtn.enable();
+										System.out.println(values);
+										DataModule id = new DataModule(el.getTagName(), el.getAttribute("id"), el.getAttribute("default"), el.getAttribute("label"), values);
+										dm.put(el.getAttribute("id"),id);
+
+									}
+									}
+								//SENSOR
+								for (int j= 0; j < sensor.getLength(); j++) {
+									Node node = sensor.item(j);
+
+									if (node.getNodeType() == Node.ELEMENT_NODE) {
+										Element el = (Element) node;
+										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("units"),Integer.parseInt(el.getAttribute("thresholdlow")),Integer.parseInt(el.getAttribute("thresholdhigh")),el.getTextContent());
+
+										dm.put(el.getAttribute("id"),id);
+									}
+								}
+							}
+
+							ArrayList<String> componentes = new ArrayList<>();
+
+
+							//We will create an array with the length of the quantity of the components
+							//The array will be the quanity but with formated to string, to match the information that the XML provides
+							for (int j = 0; j < dm.size(); j++) {
+								componentes.add(String.valueOf(j));
+							}
+
+							//Update the panel view
+							contentPane.revalidate();
+							contentPane.repaint();
+							System.out.println(dm);
+
+							//Looking for the existens of the elements in the block
+							Boolean switchExists = false;
+							Boolean sliderExists = false;
+							Boolean dropdownExists = false;
+							Boolean sensorExists = false;
+
+							for (int j = 0; j < dm.size(); j++) {
+								//We will look to get the component id with its tagName
+								//Depending on the tagname it will create a diferent component
+								String toJson="{";
+
+								switch (dm.get(componentes.get(j)).getEtiqueta()) {
+									case "switch":
+										toJson+="'id':"+dm.get(componentes.get(j)).getId()+",";
+
+										JLabel labelSwitch = new JLabel(dm.get(componentes.get(j)).getName());
+										JToggleButton tglbtn = new JToggleButton("");
+										//We will get the inital state specified on the xml
+										if ((dm.get(componentes.get(j)).getDefaul().equals("on"))) {
 											activated = true;
+											tglbtn.setText("Active");
+											toJson+="'default':true,";
+										} else {
+											activated = false;
+											tglbtn.setText("Not active");
+											toJson+="'default':false,";
 										}
-										// TODO HERE PUT METHOD TO SEND INFO TO SERVER
-									}
-								});;
+										toJson+="'name':"+dm.get(componentes.get(j)).getName()+",";
+										tglbtn.addActionListener(new ActionListener() {
 
-								toJson+="},";
-								json.append("switch", new JSONObject(toJson) );
-								switchPanel.add(labelSwitch);
-								switchPanel.add(tglbtn);
-								contentPane.add(switchPanel);
-								
-								break;
-							case "slider":
-								JLabel labelSlider = new JLabel(dm.get(componentes.get(i)).getName());
-								JSlider jSlider = new JSlider(dm.get(componentes.get(i)).getMin(),dm.get(componentes.get(i)).getMax(),Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
-								jSlider.setPaintTicks(true);
-								jSlider.setMajorTickSpacing(1);
-								jSlider.setMinorTickSpacing(1);
-								jSlider.setPaintLabels(true);
+											//Changing its state every time its pressed
+											public void actionPerformed(ActionEvent e) {
+												if (activated == true) {
+													tglbtn.setText("Not active");
+													tglbtn.disable();
+													activated = false;
+												}
+												else {
+													tglbtn.setText("Active");
+													tglbtn.enable();
+													activated = true;
+												}
+												// TODO HERE PUT METHOD TO SEND INFO TO SERVER
+											}
+										});;
 
-								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+										toJson+="},";
+										json.append("switch", new JSONObject(toJson) );
 
-								toJson+="'default':"+Double.valueOf((dm.get(componentes.get(i)).getDefaul()))+",";
-								toJson+="'min':"+dm.get(componentes.get((i))).getMin()+",";
-								toJson+="'max':"+dm.get(componentes.get((i))).getMax()+",";
-								toJson+="'step':"+dm.get(componentes.get((i))).getStep()+",";
+										if (switchExists == false) {
+											scrollPane = new JScrollPane();
+											quantityElements++;
+											switchExists = true;
+										}
 
-								//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
-								jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
 
-								toJson+="},";
-								json.append("slider", new JSONObject(toJson) );
 
-								sliderPanel.add(labelSlider);
-								sliderPanel.add(jSlider);
-								contentPane.add(sliderPanel);
+										switchPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+										switchPanel.add(labelSwitch);
+										switchPanel.add(tglbtn);
 
-								break;
-							case "dropdown":
-								JLabel label = new JLabel(dm.get(componentes.get(i)).getLabel() + ":");
-								JComboBox comboBox = new JComboBox();
+										//We will create a new Scroll Panel and add the latest info to it
+										scrollPane.setViewportView(switchPanel);
+										blockPanel.add(scrollPane);
 
-								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
-								toJson+="'default':"+dm.get(componentes.get(i)).getDefaul()+",";
-								toJson+="'values':[";
-								// TODO ¿??¿?¿?¿?¿?¿? need key and value
-								//Creating an arraylist with the keys of the hashmap
-								ArrayList<String> dropdownKeys = new ArrayList<>();
-								for (Object key : dm.get(componentes.get(i)).getValue().keySet()) {
-								    String lKey = (String) key;
-								    dropdownKeys.add(lKey);
+										break;
+									case "slider":
+										JLabel labelSlider = new JLabel(dm.get(componentes.get(j)).getName());
+										JSlider jSlider = new JSlider(dm.get(componentes.get(j)).getMin(),dm.get(componentes.get(j)).getMax(),Double.valueOf((dm.get(componentes.get(j)).getDefaul())).intValue());
+										jSlider.setPaintTicks(true);
+										jSlider.setMajorTickSpacing(1);
+										jSlider.setMinorTickSpacing(1);
+										jSlider.setPaintLabels(true);
+
+										toJson+="'id':"+dm.get(componentes.get(j)).getId()+",";
+
+										toJson+="'default':"+Double.valueOf((dm.get(componentes.get(j)).getDefaul()))+",";
+										toJson+="'min':"+dm.get(componentes.get((j))).getMin()+",";
+										toJson+="'max':"+dm.get(componentes.get((j))).getMax()+",";
+										toJson+="'step':"+dm.get(componentes.get((j))).getStep()+",";
+
+										//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
+										jSlider.setValue(Double.valueOf((dm.get(componentes.get(j)).getDefaul())).intValue());
+
+										toJson+="},";
+										json.append("slider", new JSONObject(toJson) );
+
+										if (sliderExists == false) {
+											scrollPane = new JScrollPane();
+											quantityElements++;
+											sliderExists = true;
+										}
+										sliderPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+										sliderPanel.add(labelSlider);
+										sliderPanel.add(jSlider);
+										//We will create a new Scroll Panel and add the latest info to it
+										//todo ARREGLAR ESTO
+										scrollPane.setViewportView(sliderPanel);
+										blockPanel.add(scrollPane);
+										break;
+									case "dropdown":
+										JLabel label = new JLabel(dm.get(componentes.get(j)).getLabel() + ":");
+										JComboBox comboBox = new JComboBox();
+
+										toJson+="'id':"+dm.get(componentes.get(j)).getId()+",";
+										toJson+="'default':"+dm.get(componentes.get(j)).getDefaul()+",";
+										toJson+="'values':[";
+										// TODO ¿??¿?¿?¿?¿?¿? need key and value
+										//Creating an arraylist with the keys of the hashmap
+										ArrayList<String> dropdownKeys = new ArrayList<>();
+										for (Object key : dm.get(componentes.get(j)).getValue().keySet()) {
+											String lKey = (String) key;
+											dropdownKeys.add(lKey);
+										}
+
+										for (Object key : dm.get(componentes.get(j)).getValue().keySet() ) {
+											String lKey = (String) key;
+											String value = dm.get(componentes.get(j)).getValue().get(key);
+											toJson+="{"+lKey+":"+value+"},";
+										}
+										//We will iterate a for over with the Id quantity
+										for (int k = 0; k < dropdownKeys.size(); k++) {
+
+											//Checking if the iteration is the same of the deafult value
+											if (String.valueOf(dropdownKeys.get(k)).equals(String.valueOf(dm.get(componentes.get(j)).getDefaul()))) {
+												comboBox.addItem((dm.get(componentes.get(j)).getValue().get(dropdownKeys.get(k))));
+												//If it is, we will set it as selected Item
+												comboBox.setSelectedItem((dm.get(componentes.get(j)).getValue().get(dropdownKeys.get(k))));
+											} else {
+												//If not instead we just add it at the Dropdown
+												comboBox.addItem((dm.get(componentes.get(j)).getValue().get(dropdownKeys.get(k))));
+											}
+
+										}
+										toJson+="]},";
+										json.append("dropdown", new JSONObject(toJson) );
+
+										if (dropdownExists == false) {
+											scrollPane = new JScrollPane();
+											quantityElements++;
+											dropdownExists = true;
+										}
+										dropdownPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+										dropdownPanel.add(label);
+										dropdownPanel.add(comboBox);
+										//We will create a new Scroll Panel and add the latest info to it
+										scrollPane.setViewportView(dropdownPanel);
+										blockPanel.add(scrollPane);
+
+										break;
+									case "sensor":
+										JTextArea textArea = new JTextArea();
+
+										toJson+="'id':"+dm.get(componentes.get(j)).getId()+",";
+
+										//The sensor will be a textArea with the specified units
+										textArea.setText(dm.get(componentes.get(j)).getUnits());
+										toJson+="'units':"+dm.get(componentes.get(j)).getUnits()+",";
+										toJson+="'thresholdlow':"+dm.get(componentes.get(j)).getThresholdlow()+",";
+										toJson+="'thresholdhigh':"+dm.get(componentes.get(j)).getThresholdhigh()+",";
+
+										//Enabled at false to not let the user modify it
+										textArea.setEnabled(false); // TODO WHAT IS THIS? WHY DISABLED?
+
+										toJson+="},";
+										json.append("sensor", new JSONObject(toJson) );
+
+										if (sensorExists == false) {
+											scrollPane = new JScrollPane();
+											quantityElements++;
+											sensorExists = true;
+										}
+										sensorPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+										sensorPanel.add(textArea);
+										//We will create a new Scroll Panel and add the latest info to it
+										scrollPane.setViewportView(sensorPanel);
+										blockPanel.add(scrollPane);
+										break;
 								}
-								
-								for (Object key : dm.get(componentes.get(i)).getValue().keySet() ) {
-								    String lKey = (String) key;
-									String value = dm.get(componentes.get(i)).getValue().get(key);
-								    toJson+="{"+lKey+":"+value+"},";
+								System.out.println("Quantity"+quantityElements);
+								if ((Math.round(quantityElements/2) == 0)) {
+									blockPanel.setLayout(new GridLayout(1, 1));
+								} else {
+									blockPanel.setLayout(new GridLayout((Math.round(quantityElements/2)), (Math.round(quantityElements/2))));
 								}
-								//We will iterate a for over with the Id quantity
-								for (int j = 0; j < dropdownKeys.size(); j++) {
-									
-									//Checking if the iteration is the same of the deafult value
-									if (String.valueOf(dropdownKeys.get(j)).equals(String.valueOf(dm.get(componentes.get(i)).getDefaul()))) {
-										comboBox.addItem((dm.get(componentes.get(i)).getValue().get(dropdownKeys.get(j))));
-										//If it is, we will set it as selected Item
-										comboBox.setSelectedItem((dm.get(componentes.get(i)).getValue().get(dropdownKeys.get(j))));
-									} else {
-										//If not instead we just add it at the Dropdown
-										comboBox.addItem((dm.get(componentes.get(i)).getValue().get(dropdownKeys.get(j))));
-									}
-									
-								}
-								toJson+="]},";
-								json.append("dropdown", new JSONObject(toJson) );
-								dropdownPanel.add(label);
-								dropdownPanel.add(comboBox);
-								contentPane.add(dropdownPanel);
-								break;
-							case "sensor":
-								JTextArea textArea = new JTextArea();
-
-								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
-
-								//The sensor will be a textArea with the specified units
-								textArea.setText(dm.get(componentes.get(i)).getUnits());
-								toJson+="'units':"+dm.get(componentes.get(i)).getUnits()+",";
-								toJson+="'thresholdlow':"+dm.get(componentes.get(i)).getThresholdlow()+",";
-								toJson+="'thresholdhigh':"+dm.get(componentes.get(i)).getThresholdhigh()+",";
-
-								//Enabled at false to not let the user modify it
-								textArea.setEnabled(false); // TODO WHAT IS THIS? WHY DISABLED?
-								
-								toJson+="},";
-								json.append("sensor", new JSONObject(toJson) );
-
-								sensorPanel.add(textArea);
-								contentPane.add(sensorPanel);
-
-								break;
+							}
 						}
 					}
+					System.out.println(generalData);
+					
+
 					System.out.println("--------------------------------------------------");
 					System.out.println(json);
 					doc.getDocumentElement().normalize();
