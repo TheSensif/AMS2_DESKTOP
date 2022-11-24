@@ -1,12 +1,7 @@
 package database;
 import com.password4j.Password;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.DatabaseMetaData;
@@ -14,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class UtilsSQLite {
