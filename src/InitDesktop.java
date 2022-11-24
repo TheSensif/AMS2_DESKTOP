@@ -33,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -428,7 +429,11 @@ public class InitDesktop extends JFrame {
 					snapshot.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							
+							Connection conn = UtilsSQLite.connect(System.getProperty("user.dir") + "/src/database/database.db");
+							String name;
+							name = JOptionPane.showInputDialog("Name save snapshot: ");
+							UtilsSQLite.queryUpdate(conn,"INSERT INTO save (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
+							UtilsSQLite.disconnect(conn);
 						}
 					});
 
