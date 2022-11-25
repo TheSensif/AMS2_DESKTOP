@@ -155,7 +155,7 @@ public class DataModule {
     public String toString() {
         if (Objects.equals(etiqueta, "slider")) {
             return "DataModule{" + etiqueta +
-                    ", id='" + id +
+                    ", id='" + id + '\'' +
                     ", defaul='" + defaul + '\'' +
                     ", min=" + min +
                     ", max=" + max +

@@ -173,6 +173,7 @@ public class InitDesktop extends JFrame {
 						for (int i = 0; i < control.getLength(); i++) {
 							HashMap<String,DataModule> dm = new HashMap<>();
 							int quantityElements = 0;
+							ArrayList<String> elementIds = new ArrayList<>();
 							Node nodeControl = control.item(i);
 							if (nodeControl.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) nodeControl;
@@ -189,13 +190,6 @@ public class InitDesktop extends JFrame {
 
 								contentPane.add(blockPanel);
 
-								switchPanel = new JPanel();
-
-								sliderPanel = new JPanel();
-
-								dropdownPanel = new JPanel();
-
-								sensorPanel = new JPanel();
 
 
 
@@ -208,18 +202,23 @@ public class InitDesktop extends JFrame {
 										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("default"),el.getTextContent());
 
 										dm.put(el.getAttribute("id"),id);
+										elementIds.add(el.getAttribute("id"));
 									}
 								}
+
+								//todo En lugar de recorrer por la longitud de los dm, iterar directamente a traves de las id
 
 								//SLIDER
 								for (int j= 0; j < slider.getLength(); j++) {
 									Node node = slider.item(j);
-
 									if (node.getNodeType() == Node.ELEMENT_NODE) {
+
 										Element el = (Element) node;
 										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("default"),Integer.parseInt(el.getAttribute("min")),Integer.parseInt(el.getAttribute("max")),el.getAttribute("step"),el.getTextContent());
 
 										dm.put(el.getAttribute("id"),id);
+										elementIds.add(el.getAttribute("id"));
+
 									}
 								}
 
@@ -239,9 +238,9 @@ public class InitDesktop extends JFrame {
 												values.put(eo.getAttribute("value"), eo.getTextContent());
 											}
 										}
-										System.out.println(values);
 										DataModule id = new DataModule(el.getTagName(), el.getAttribute("id"), el.getAttribute("default"), el.getAttribute("label"), values);
 										dm.put(el.getAttribute("id"),id);
+										elementIds.add(el.getAttribute("id"));
 
 									}
 									}
@@ -254,9 +253,19 @@ public class InitDesktop extends JFrame {
 										DataModule id = new DataModule(el.getTagName(),el.getAttribute("id"),el.getAttribute("units"),Integer.parseInt(el.getAttribute("thresholdlow")),Integer.parseInt(el.getAttribute("thresholdhigh")),el.getTextContent());
 
 										dm.put(el.getAttribute("id"),id);
+										elementIds.add(el.getAttribute("id"));
+
 									}
 								}
 							}
+							switchPanel = new JPanel();
+
+							sliderPanel = new JPanel();
+
+							dropdownPanel = new JPanel();
+
+							sensorPanel = new JPanel();
+
 
 							ArrayList<String> componentes = new ArrayList<>();
 
@@ -267,10 +276,15 @@ public class InitDesktop extends JFrame {
 								componentes.add(String.valueOf(j));
 							}
 
+							for (int j = 0; j < elementIds.size(); j++) {
+								System.out.println("ID"+elementIds.get(j));
+							}
+
+
+
 							//Update the panel view
 							contentPane.revalidate();
 							contentPane.repaint();
-							System.out.println(dm);
 
 							//Looking for the existens of the elements in the block
 							Boolean switchExists = false;
@@ -278,11 +292,14 @@ public class InitDesktop extends JFrame {
 							Boolean dropdownExists = false;
 							Boolean sensorExists = false;
 
+
+
 							for (int j = 0; j < dm.size(); j++) {
+								System.out.println(dm.size());
 								//We will look to get the component id with its tagName
 								//Depending on the tagname it will create a diferent component
 								String toJson="{";
-
+								System.out.println(dm.get(componentes.get(j)));
 								switch (dm.get(componentes.get(j)).getEtiqueta()) {
 									case "switch":
 										toJson+="'id':"+dm.get(componentes.get(j)).getId()+",";
@@ -451,7 +468,6 @@ public class InitDesktop extends JFrame {
 										blockPanel.add(scrollPane);
 										break;
 								}
-								System.out.println("Quantity"+quantityElements);
 								if ((Math.round(quantityElements/2) == 0)) {
 									blockPanel.setLayout(new GridLayout(1, 1));
 								} else {
