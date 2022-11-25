@@ -44,6 +44,7 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.*;
+import windows.SnapshotTable;
 
 public class InitDesktop extends JFrame {
 	private File archivo;
@@ -54,7 +55,7 @@ public class InitDesktop extends JFrame {
 
 	private JMenuBar menuBar;
 	private JMenu mnArchivo,mnVisualizacion;
-	private JMenuItem mntmCargarConfiguracion, snapshot;
+	private JMenuItem mntmCargarConfiguracion, snapshot, loadSnapshot;
 
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
@@ -123,6 +124,11 @@ public class InitDesktop extends JFrame {
 		snapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		mnArchivo.add(snapshot);
 		snapshot.setEnabled(false);
+
+		loadSnapshot = new JMenuItem("LOAD SNAPSHOT");
+		loadSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
+		loadSnapshot.setEnabled(false);
+		mnArchivo.add(loadSnapshot);
 
 		mnVisualizacion = new JMenu("Visualization");
 		menuBar.add(mnVisualizacion);
@@ -425,6 +431,7 @@ public class InitDesktop extends JFrame {
 						}
 					}
 					snapshot.setEnabled(true);
+					loadSnapshot.setEnabled(true);
 
 					snapshot.addActionListener(new ActionListener() {
 						@Override
@@ -434,6 +441,14 @@ public class InitDesktop extends JFrame {
 							name = JOptionPane.showInputDialog("Name save snapshot: ");
 							UtilsSQLite.sqlSnapshots(conn,"INSERT INTO snaptshots (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
 							UtilsSQLite.disconnect(conn);
+						}
+					});
+
+					loadSnapshot.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							SnapshotTable snapshotTable = new SnapshotTable();
+							snapshotTable.setVisible(true);
 						}
 					});
 

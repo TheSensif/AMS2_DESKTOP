@@ -113,4 +113,14 @@ public class UtilsSQLite {
         } catch (SQLException e) { e.printStackTrace();System.out.println("ERROR SQLUTILS"); }
         return rs;
     }
+    public static ResultSet getTable(Connection conn, String sql) {
+        ResultSet rs = null;
+        try {
+            Statement st = conn.createStatement();
+            rs = st.executeQuery(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rs;
+    }
 }
