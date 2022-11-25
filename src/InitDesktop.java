@@ -139,6 +139,8 @@ public class InitDesktop extends JFrame {
 		
 		
 	}
+
+	
 	
 	public static byte[] jsonToBytes (JSONObject obj) {
         byte[] result = null;
@@ -186,6 +188,7 @@ public class InitDesktop extends JFrame {
 			String [] part = name.split("\\.");
 			//If the file is filtered we will open it
 			if (Objects.equals(part[1],"xml")){
+				
 				try {
 					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 					DocumentBuilder db = null;
@@ -218,7 +221,7 @@ public class InitDesktop extends JFrame {
 					if ( switc.getLength() != 0) {
 						for (int i = 0; i < switc.getLength(); i++) {
 							Node node = switc.item(i);
-
+							// this.contentPane.removeAll();
 							if (node.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) node;
 								NamedNodeMap attrb = e.getAttributes();
@@ -378,6 +381,11 @@ public class InitDesktop extends JFrame {
 						componentes.add(String.valueOf(i));
 					}
 					
+					//DELETE ALL CONTENTPANEL HERE
+					sliderPanel.removeAll();
+					dropdownPanel.removeAll();
+					switchPanel.removeAll();
+					sensorPanel.removeAll();
 					//Update the panel view
 					contentPane.revalidate();
 					contentPane.repaint();
