@@ -8,9 +8,7 @@ import org.xml.sax.SAXException;
 import modules.DataModule;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +23,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -56,7 +53,9 @@ public class InitDesktop extends JFrame {
 	private JPanel switchPanel;
 	private JPanel blockPanel;
 	private Boolean activated;
-	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
+	private JSONObject json; // we create the json object
+	private JSONObject jsonObj = new JSONObject();
+	private String blockName;
 
 	/**
 	 * Launch the application.
@@ -175,6 +174,7 @@ public class InitDesktop extends JFrame {
 							int quantityElements = 0;
 							ArrayList<String> elementIds = new ArrayList<>();
 							Node nodeControl = control.item(i);
+
 							if (nodeControl.getNodeType() == Node.ELEMENT_NODE) {
 								Element e = (Element) nodeControl;
 								//We will store the data of the diferents components
@@ -184,9 +184,17 @@ public class InitDesktop extends JFrame {
 								NodeList sensor = e.getElementsByTagName("sensor");
 
 								generalData.put(e.getAttribute("name"),dm);
+								//json = new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}");
+								json = new JSONObject();
+								//blockJson = new JSONObject("{'"+e.getAttribute("name")+"':"+json+"}");
+
+								blockName = e.getAttribute("name");
+								//private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
 
 								blockPanel = new JPanel();
-								blockPanel.setBorder(BorderFactory.createLineBorder(Color.magenta));
+
+
+								blockPanel.setBorder(BorderFactory.createLineBorder(Color.magenta,3));
 
 								contentPane.add(blockPanel);
 
@@ -218,7 +226,6 @@ public class InitDesktop extends JFrame {
 
 										dm.put(el.getAttribute("id"),id);
 										elementIds.add(el.getAttribute("id"));
-
 									}
 								}
 
@@ -266,14 +273,13 @@ public class InitDesktop extends JFrame {
 
 							sensorPanel = new JPanel();
 
-
 							ArrayList<String> componentes = new ArrayList<>();
 
 
 							//We will create an array with the length of the quantity of the components
 							//The array will be the quanity but with formated to string, to match the information that the XML provides
 							for (int j = 0; j < dm.size(); j++) {
-								componentes.add(String.valueOf(j));
+								componentes.add(elementIds.get(j));
 							}
 
 							for (int j = 0; j < elementIds.size(); j++) {
@@ -295,7 +301,6 @@ public class InitDesktop extends JFrame {
 
 
 							for (int j = 0; j < dm.size(); j++) {
-								System.out.println(dm.size());
 								//We will look to get the component id with its tagName
 								//Depending on the tagname it will create a diferent component
 								String toJson="{";
@@ -342,6 +347,8 @@ public class InitDesktop extends JFrame {
 											scrollPane = new JScrollPane();
 											quantityElements++;
 											switchExists = true;
+											//JSONObject jsonSwitch = new JSONObject("{'switch':[]");
+											//todo CUANDO SEPAMOS QUE SE AÑADE UN COMPONENTE TAMBIEN LO MODIFICAMOS AL JSON BASE
 										}
 
 
@@ -380,6 +387,7 @@ public class InitDesktop extends JFrame {
 											scrollPane = new JScrollPane();
 											quantityElements++;
 											sliderExists = true;
+											//JSONObject jsonSlider = new JSONObject("{'slider':[]");
 										}
 										sliderPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 										sliderPanel.add(labelSlider);
@@ -430,6 +438,7 @@ public class InitDesktop extends JFrame {
 											scrollPane = new JScrollPane();
 											quantityElements++;
 											dropdownExists = true;
+											//JSONObject jsonDropdown = new JSONObject("{'dropdown':[]");
 										}
 										dropdownPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 										dropdownPanel.add(label);
@@ -460,6 +469,7 @@ public class InitDesktop extends JFrame {
 											scrollPane = new JScrollPane();
 											quantityElements++;
 											sensorExists = true;
+											//JSONObject jsonSensor = new JSONObject("{'sensor':[]");
 										}
 										sensorPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 										sensorPanel.add(textArea);
@@ -474,13 +484,14 @@ public class InitDesktop extends JFrame {
 									blockPanel.setLayout(new GridLayout((Math.round(quantityElements/2)), (Math.round(quantityElements/2))));
 								}
 							}
+							jsonObj.append(blockName,json);
 						}
 					}
 					System.out.println(generalData);
 					
 
 					System.out.println("--------------------------------------------------");
-					System.out.println(json);
+					System.out.println(jsonObj);
 					doc.getDocumentElement().normalize();
 
 					try {
@@ -502,13 +513,16 @@ public class InitDesktop extends JFrame {
 							@Override
 							public void onOpen(ServerHandshake handshake) {
 							  System.out.println("CONNECTED");
-								cc.send(jsonToBytes(json));
+								cc.send(jsonToBytes(jsonObj));
 								
 							}
 		  
 							@Override
 							public void onClose(int code, String reason, boolean remote) {
 								
+							}
+							public void pepe() {
+								System.out.println("");
 							}
 		  
 							@Override

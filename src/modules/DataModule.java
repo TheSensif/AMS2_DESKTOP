@@ -154,7 +154,7 @@ public class DataModule {
     @Override
     public String toString() {
         if (Objects.equals(etiqueta, "slider")) {
-            return "DataModule{" + etiqueta +
+            return "DataModule{'" + etiqueta +
                     ", id='" + id + '\'' +
                     ", defaul='" + defaul + '\'' +
                     ", min=" + min +
@@ -162,20 +162,19 @@ public class DataModule {
                     ", step='" + step + '\'' +
                     '}';
         } else  if (Objects.equals(etiqueta, "switch")){
-            return "DataModule{" + etiqueta+
+            return "DataModule{'" + etiqueta+
                     ", id='" + id + '\'' +
                     ", defaul='" + defaul + '\'' +
                     ", name='" + name + '\'' +
                     '}';
         } else if (Objects.equals(etiqueta, "dropdown")) {
-            return "DataModule{" + etiqueta + '\'' +
+            return "DataModule{'" + etiqueta + '\'' +
                     ", id='" + id + '\'' +
                     ", defaul='" + defaul + '\'' +
                     ", label='" + label + '\'' +
                     ", value=" + value + '}';
         } else if (Objects.equals(etiqueta, "sensor")) {
-            return "DataModule{" +
-                    "etiqueta='" + etiqueta + '\'' +
+            return "DataModule{'" + etiqueta + '\'' +
                     ", id='" + id + '\'' +
                     ", units='" + units + '\'' +
                     ", thresholdlow=" + thresholdlow +
