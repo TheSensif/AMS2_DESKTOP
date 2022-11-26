@@ -1,4 +1,6 @@
 import database.Database;
+import models.ModeloTransferencia;
+import models.SnapshotValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,14 +13,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
@@ -36,7 +35,6 @@ import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.java_websocket.client.WebSocketClient;
@@ -45,6 +43,7 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.*;
 import windows.SnapshotTable;
+
 
 public class InitDesktop extends JFrame {
 	private File archivo;
@@ -63,7 +62,7 @@ public class InitDesktop extends JFrame {
 	private JPanel switchPanel;
 	private Boolean activated;
 	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
-
+	public String value;
 	//JSON manage method
 	//String jsonString = "{'pageInfo': {'pageName': 'abc','pagePic':'http://example.com/content.jpg'}}"; //assign your JSON String here
 	// JSONObject obj = new JSONObject(jsonString);
@@ -449,6 +448,8 @@ public class InitDesktop extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							SnapshotTable snapshotTable = new SnapshotTable();
 							snapshotTable.setVisible(true);
+							ModeloTransferencia modelo = SnapshotValue.modeloTransferencia;
+							value = modelo.getValue();
 						}
 					});
 
