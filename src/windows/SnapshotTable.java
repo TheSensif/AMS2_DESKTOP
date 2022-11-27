@@ -27,6 +27,7 @@ public class SnapshotTable extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private String value;
+	private String jsonValue;
 
 	
 	public SnapshotTable() {
@@ -52,7 +53,7 @@ public class SnapshotTable extends JFrame {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        
+        UtilsSQLite.disconnect(conn);
 		table = new JTable(model);
 		table.addMouseListener(new MouseAdapter() {
 
@@ -69,8 +70,16 @@ public class SnapshotTable extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ModeloTransferencia modelo = SnapshotValue.modeloTransferencia;
-				modelo.setValue(value);
+				Connection conn = UtilsSQLite.connect(filePath);
+				ResultSet rs = UtilsSQLite.getTable(conn,"SELECT json FROM snaptshots WHERE name = \""+value+"\";");
+				try {
+					jsonValue = rs.getString("json");
+				} catch (SQLException ex) {
+					throw new RuntimeException(ex);
+				}
+				modelo.setValue(jsonValue);
 				setVisible(false);
+
 			}
 		});
 		btnSend.setText("SEND");

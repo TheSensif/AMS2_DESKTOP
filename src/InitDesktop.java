@@ -46,6 +46,7 @@ import windows.SnapshotTable;
 
 
 public class InitDesktop extends JFrame {
+	private ModeloTransferencia modelo = SnapshotValue.modeloTransferencia;
 	private File archivo;
 	private static InitDesktop frame;
 	private WebSocketClient cc;
@@ -448,8 +449,8 @@ public class InitDesktop extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							SnapshotTable snapshotTable = new SnapshotTable();
 							snapshotTable.setVisible(true);
-							ModeloTransferencia modelo = SnapshotValue.modeloTransferencia;
-							value = modelo.getValue();
+
+
 						}
 					});
 
