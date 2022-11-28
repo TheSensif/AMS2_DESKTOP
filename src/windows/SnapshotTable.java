@@ -28,6 +28,7 @@ public class SnapshotTable extends JFrame {
 	private JTable table;
 	private String value;
 	private String jsonValue;
+	private static boolean visi;
 
 	
 	public SnapshotTable() {
@@ -78,13 +79,15 @@ public class SnapshotTable extends JFrame {
 					throw new RuntimeException(ex);
 				}
 				modelo.setValue(jsonValue);
+				setVisi(false);
+				UtilsSQLite.disconnect(conn);
 				setVisible(false);
 
 			}
 		});
 		btnSend.setText("SEND");
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 450);
 		contentPane = new JPanel();
 
 		setContentPane(contentPane);
@@ -110,4 +113,11 @@ public class SnapshotTable extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 	}
 
+	public boolean isVisi() {
+		return visi;
+	}
+
+	public void setVisi(boolean visi) {
+		this.visi = visi;
+	}
 }

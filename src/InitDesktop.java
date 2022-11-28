@@ -47,6 +47,7 @@ import windows.SnapshotTable;
 
 public class InitDesktop extends JFrame {
 	private ModeloTransferencia modelo = SnapshotValue.modeloTransferencia;
+	SnapshotTable snapshotTable = new SnapshotTable();
 	private File archivo;
 	private static InitDesktop frame;
 	private WebSocketClient cc;
@@ -55,7 +56,7 @@ public class InitDesktop extends JFrame {
 
 	private JMenuBar menuBar;
 	private JMenu mnArchivo,mnVisualizacion;
-	private JMenuItem mntmCargarConfiguracion, snapshot, loadSnapshot;
+	private JMenuItem mntmCargarConfiguracion, snapshot, loadSnapshot, applySnapshot;
 
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
@@ -63,7 +64,7 @@ public class InitDesktop extends JFrame {
 	private JPanel switchPanel;
 	private Boolean activated;
 	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
-	public String value;
+	private String value;
 	//JSON manage method
 	//String jsonString = "{'pageInfo': {'pageName': 'abc','pagePic':'http://example.com/content.jpg'}}"; //assign your JSON String here
 	// JSONObject obj = new JSONObject(jsonString);
@@ -128,7 +129,13 @@ public class InitDesktop extends JFrame {
 		loadSnapshot = new JMenuItem("LOAD SNAPSHOT");
 		loadSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
 		loadSnapshot.setEnabled(false);
+
+		applySnapshot = new JMenuItem("APPLY SNAPSHOT");
+		applySnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		applySnapshot.setEnabled(false);
+
 		mnArchivo.add(loadSnapshot);
+		mnArchivo.add(applySnapshot);
 
 		mnVisualizacion = new JMenu("Visualization");
 		menuBar.add(mnVisualizacion);
@@ -432,28 +439,28 @@ public class InitDesktop extends JFrame {
 					}
 					snapshot.setEnabled(true);
 					loadSnapshot.setEnabled(true);
+					applySnapshot.setEnabled(true);
 
 					snapshot.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Connection conn = UtilsSQLite.connect(System.getProperty("user.dir") + "/src/database/database.db");
-							String name;
-							name = JOptionPane.showInputDialog("Name save snapshot: ");
-							UtilsSQLite.sqlSnapshots(conn,"INSERT INTO snaptshots (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
-							UtilsSQLite.disconnect(conn);
+							saveSnapshot();
 						}
 					});
 
 					loadSnapshot.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							SnapshotTable snapshotTable = new SnapshotTable();
-							snapshotTable.setVisible(true);
-
-
+							loadSnapshot();
 						}
 					});
 
+					applySnapshot.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							//applySnapshot();
+						}
+					});
 					System.out.println("--------------------------------------------------");
 					System.out.println(json);
 					doc.getDocumentElement().normalize();
@@ -512,5 +519,27 @@ public class InitDesktop extends JFrame {
 
 		}
 	}
+
+	private void saveSnapshot() {
+		Connection conn = UtilsSQLite.connect(System.getProperty("user.dir") + "/src/database/database.db");
+		String name;
+		name = JOptionPane.showInputDialog("Name save snapshot: ");
+		UtilsSQLite.sqlSnapshots(conn,"INSERT INTO snaptshots (json,date,name) VALUES ('"+ json + "',strftime('%Y-%m-%d %H:%M'),\""+name+"\");");
+		UtilsSQLite.disconnect(conn);
+	}
+
+	private void loadSnapshot() {
+		snapshotTable.setVisible(true);
+	}
+	/*
+	private void applySnapshot() {
+		value = modelo.getValue();
+		JSONObject jsonObject = new JSONObject(value);
+		JSONArray JSON = new JSONArray();
+		System.out.println(jsonObject.get("slider"));
+
+	}
+
+	 */
 }
 
