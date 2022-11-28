@@ -21,12 +21,16 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -50,6 +54,7 @@ public class InitDesktop extends JFrame {
 	private WebSocketClient cc;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
+	private boolean restarts=false;
 
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
@@ -57,6 +62,11 @@ public class InitDesktop extends JFrame {
 	private JPanel switchPanel;
 	private Boolean activated;
 	private JSONObject json=new JSONObject("{'switch':[],'slider':[],'dropdown':[],'sensor':[]}"); // we create the json object
+
+	private HashMap <String,JSlider> hashSliders=new HashMap<>();
+	private HashMap <String,JComboBox> hashDropdown=new HashMap<>();
+	private HashMap <String,JToggleButton> hashSwitch=new HashMap<>();
+	//private HashMap <String,JTextArea> hashSensor;
 
 	//JSON manage method
 	//String jsonString = "{'pageInfo': {'pageName': 'abc','pagePic':'http://example.com/content.jpg'}}"; //assign your JSON String here
@@ -386,6 +396,13 @@ public class InitDesktop extends JFrame {
 					dropdownPanel.removeAll();
 					switchPanel.removeAll();
 					sensorPanel.removeAll();
+
+					//restart server
+					if(restarts==true){
+						cc.send("restart");
+					}
+					
+
 					//Update the panel view
 					contentPane.revalidate();
 					contentPane.repaint();
@@ -398,8 +415,10 @@ public class InitDesktop extends JFrame {
 						switch (dm.get(componentes.get(i)).getEtiqueta()) {
 							case "switch":
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
+								String ide=dm.get(componentes.get(i)).getId();
 
 								JLabel labelSwitch = new JLabel(dm.get(componentes.get(i)).getName());
+								
 								JToggleButton tglbtn = new JToggleButton("");
 								//We will get the inital state specified on the xml
 								if ((dm.get(componentes.get(i)).getDefaul().equals("on"))) {
@@ -426,12 +445,15 @@ public class InitDesktop extends JFrame {
 											tglbtn.enable();
 											activated = true;
 										}
-										// TODO HERE PUT METHOD TO SEND INFO TO SERVER
+										// TODO HERE PUT METHOD TO SEND INFO TO SERVER TODO!!!! DO THE SAME WITH OTHER COMPONENTS
+										JSONObject jsonTemp=new JSONObject("{"+"component:switch,id:"+ide+","+"value:"+activated+"}");
+										cc.send(jsonToBytes(jsonTemp));
 									}
 								});;
-
+								
 								toJson+="},";
 								json.append("switch", new JSONObject(toJson) );
+								hashSwitch.put(ide, tglbtn);
 								switchPanel.add(labelSwitch);
 								switchPanel.add(tglbtn);
 								contentPane.add(switchPanel);
@@ -440,6 +462,7 @@ public class InitDesktop extends JFrame {
 							case "slider":
 								JLabel labelSlider = new JLabel(dm.get(componentes.get(i)).getName());
 								JSlider jSlider = new JSlider(dm.get(componentes.get(i)).getMin(),dm.get(componentes.get(i)).getMax(),Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
+								String ide2=dm.get(componentes.get(i)).getId();
 								jSlider.setPaintTicks(true);
 								jSlider.setMajorTickSpacing(1);
 								jSlider.setMinorTickSpacing(1);
@@ -455,9 +478,21 @@ public class InitDesktop extends JFrame {
 								//Firstly we will get it as a string, then we will have to convert it into a double because it has a decimal, finally we will convert it into int
 								jSlider.setValue(Double.valueOf((dm.get(componentes.get(i)).getDefaul())).intValue());
 
+								jSlider.addChangeListener(new ChangeListener() {
+
+									@Override
+									public void stateChanged(ChangeEvent e) {
+										// TODO Auto-generated method stub
+										int valueTemp=jSlider.getValue();
+										JSONObject jsonTemp=new JSONObject("{"+"component:slider,id:"+ide2+","+"value:"+valueTemp+"}");
+										cc.send(jsonToBytes(jsonTemp));
+									}
+									
+								});
+
 								toJson+="},";
 								json.append("slider", new JSONObject(toJson) );
-
+								hashSliders.put(ide2, jSlider);
 								sliderPanel.add(labelSlider);
 								sliderPanel.add(jSlider);
 								contentPane.add(sliderPanel);
@@ -469,6 +504,7 @@ public class InitDesktop extends JFrame {
 
 								toJson+="'id':"+dm.get(componentes.get(i)).getId()+",";
 								toJson+="'default':"+dm.get(componentes.get(i)).getDefaul()+",";
+								String ide3=dm.get(componentes.get(i)).getId();
 								toJson+="'values':[";
 								// TODO ¿??¿?¿?¿?¿?¿? need key and value
 								//Creating an arraylist with the keys of the hashmap
@@ -497,9 +533,22 @@ public class InitDesktop extends JFrame {
 									}
 									
 								}
+
 								toJson+="]},";
 								json.append("dropdown", new JSONObject(toJson) );
 								dropdownPanel.add(label);
+								comboBox.addItemListener(new ItemListener() {
+									
+									@Override
+									public void itemStateChanged(ItemEvent e) {
+										System.out.println("CHANGE");
+										// TODO Auto-generated method stub
+										int valueTemp=comboBox.getSelectedIndex();
+										JSONObject jsonTemp=new JSONObject("{"+"component:dropdown,id:"+ide3+","+"value:"+valueTemp+"}");
+										cc.send(jsonToBytes(jsonTemp));
+									}
+								});
+								hashDropdown.put(ide3, comboBox);
 								dropdownPanel.add(comboBox);
 								contentPane.add(dropdownPanel);
 								break;
@@ -519,7 +568,8 @@ public class InitDesktop extends JFrame {
 								
 								toJson+="},";
 								json.append("sensor", new JSONObject(toJson) );
-
+								// textArea.ListenerInp
+								//hashSensor.put(ide4, textArea)
 								sensorPanel.add(textArea);
 								contentPane.add(sensorPanel);
 
@@ -531,41 +581,65 @@ public class InitDesktop extends JFrame {
 					doc.getDocumentElement().normalize();
 
 					try {
-						cc = new WebSocketClient(new URI("ws://127.0.0.1:8888"), (Draft) new Draft_6455()) {
-							@Override
-							public void onMessage(String message) {
-								
-							}
+						if(restarts==false){
+							cc = new WebSocketClient(new URI("ws://127.0.0.1:8888"), (Draft) new Draft_6455()) {
+								@Override
+								public void onMessage(String message) {
+									
+								}
+	
+								@Override
+								public void onMessage(ByteBuffer message) {
+									String tempString= bytesToObject(message);
+									JSONObject tempJson=new JSONObject(tempString);
+									// TODO update value
+									System.out.println("RECIVING NEW VALUE:");
+									System.out.println(tempJson);
+									if(tempJson.getString("component").equalsIgnoreCase("switch")){
+										JToggleButton t= hashSwitch.get(String.valueOf( tempJson.getInt("id")));
+										if(tempJson.getBoolean("value")){
+											t.setText("Active");
+											activated=true;
+										}else{
+											t.setText("Not active");
+											activated=false;
+										}
+										
+									}else if(tempJson.getString("component").equalsIgnoreCase("slider")){
+										JSlider s=hashSliders.get(String.valueOf( tempJson.getInt("id")));
+										s.setValue(tempJson.getInt("value"));
+									}else if(tempJson.getString("component").equalsIgnoreCase("dropdown")){
+										JComboBox c=hashDropdown.get(String.valueOf( tempJson.getInt("id")));
+										c.setSelectedIndex(tempJson.getInt("value"));
+									}
 
-							@Override
-							public void onMessage(ByteBuffer message) {
-								String tempString= bytesToObject(message);
-								JSONObject tempJson=new JSONObject(tempString);
-								// TODO update value
-								System.out.println("RECIVING NEW VALUE:");
-								System.out.println(tempJson);
-							}
-		  
-							@Override
-							public void onOpen(ServerHandshake handshake) {
-							  System.out.println("CONNECTED");
-								cc.send(jsonToBytes(json));
-								
-							}
-		  
-							@Override
-							public void onClose(int code, String reason, boolean remote) {
-								
-							}
-		  
-							@Override
-							public void onError(Exception ex) {
-								
-							}
-						};
-		  
+								}
+			  
+								@Override
+								public void onOpen(ServerHandshake handshake) {
+								  System.out.println("CONNECTED");
+									cc.send(jsonToBytes(json));
+									
+								}
+			  
+								@Override
+								public void onClose(int code, String reason, boolean remote) {
+									
+								}
+			  
+								@Override
+								public void onError(Exception ex) {
+									
+								}
+							};
+			  
+							
+							cc.connect();
+						}else{
+							cc.send(jsonToBytes(json));
+						}
 						
-						cc.connect();
+						restarts=true;
 					  } catch (URISyntaxException ex) {
 						System.out.println("Error Connection:"+ex);
 					  }

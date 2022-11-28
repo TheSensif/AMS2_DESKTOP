@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -31,7 +32,9 @@ public class Server extends WebSocketServer {
     private ByteBuffer configurationData=null;
     private ByteBuffer changeValue=null;
     private static boolean running = true;
+   
     private WebSocket desktop;
+    private boolean first=true;
 
     public static void main(String[] args)  throws InterruptedException, IOException {
         int port = 8888; 
@@ -72,6 +75,7 @@ public class Server extends WebSocketServer {
         }
         else{
             System.out.println("Youre other device");
+            
         }
         // conn.send("Benvingut a WsServer"); 
 
@@ -92,8 +96,13 @@ public class Server extends WebSocketServer {
             if(message.equalsIgnoreCase("exit")){
                 
                 System.out.println("si eres");
+                System.exit(getConnectionLostTimeout());
                 
                 
+            } else if(message.equalsIgnoreCase("restart")){
+                broadcast("restart");
+                first=true;
+
             }
         }
         else if(message.equalsIgnoreCase("requestConfiguration")){
@@ -145,15 +154,23 @@ public class Server extends WebSocketServer {
             
 
         }
-        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress()+" sended a message");
+        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress()+" sended a message:"+message);
     };
     
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
 
         if(conn.getRemoteSocketAddress().getAddress().getHostAddress().equalsIgnoreCase("127.0.0.1")){
-            System.out.println("YOU'RE THE DESKTOP!!!!");
-            this.configurationData=message;
+            if(first){
+                System.out.println("YOU'RE THE DESKTOP IM getting your screen!!!!");
+                this.configurationData=message;
+                first=false;
+            }else{
+                System.out.println("SEND NEW VALUES");
+                
+                broadcast(message);
+            }
+            
 
         }
         else{
