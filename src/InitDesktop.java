@@ -63,8 +63,8 @@ public class InitDesktop extends JFrame {
 	private boolean restarts=false;
 
 	private JMenuBar menuBar;
-	private JMenu mnArchivo,mnVisualizacion;
-	private JMenuItem mntmCargarConfiguracion, snapshot, loadSnapshot, applySnapshot;
+	private JMenu mnArchivo,mnVisualizacion,mnSnapshot;
+	private JMenuItem mntmCargarConfiguracion, snapshotsave, loadSnapshot, applySnapshot;
 
 	private JPanel sensorPanel;
 	private JPanel dropdownPanel;
@@ -123,7 +123,13 @@ public class InitDesktop extends JFrame {
 		
 		mnArchivo = new JMenu("File");
 		menuBar.add(mnArchivo);
-		
+
+		mnVisualizacion = new JMenu("Visualization");
+		menuBar.add(mnVisualizacion);
+
+		mnSnapshot = new JMenu("SnapShot");
+		menuBar.add(mnSnapshot);
+
 		mntmCargarConfiguracion = new JMenuItem("Charge configuration");
 		//Charging the icon
 		// BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir") + "/src/images/load.png"));
@@ -137,20 +143,18 @@ public class InitDesktop extends JFrame {
 		mntmCargarConfiguracion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		mnArchivo.add(mntmCargarConfiguracion);
 
-		snapshot = new JMenuItem("SNAPSHOT ");
+		snapshotsave = new JMenuItem("SnapShot");
 
-		snapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-		mnArchivo.add(snapshot);
-		snapshot.setEnabled(false);
+		snapshotsave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mnSnapshot.add(snapshotsave);
+		snapshotsave.setEnabled(false);
 
-		loadSnapshot = new JMenuItem("LOAD SNAPSHOT");
+		loadSnapshot = new JMenuItem("Load SnapShot");
 		loadSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
 		loadSnapshot.setEnabled(false);
 
-		mnArchivo.add(loadSnapshot);
+		mnSnapshot.add(loadSnapshot);
 
-		mnVisualizacion = new JMenu("Visualization");
-		menuBar.add(mnVisualizacion);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new GridLayout(2, 2));
@@ -673,10 +677,10 @@ public class InitDesktop extends JFrame {
 					contentPane.revalidate();
 					contentPane.repaint();
 
-					snapshot.setEnabled(true);
+					snapshotsave.setEnabled(true);
 					loadSnapshot.setEnabled(true);
 
-					snapshot.addActionListener(new ActionListener() {
+					snapshotsave.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							Connection conn = UtilsSQLite.connect(System.getProperty("user.dir") + "/src/database/database.db");
