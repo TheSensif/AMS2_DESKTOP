@@ -1,6 +1,7 @@
 package database;
 import com.password4j.Password;
 
+import javax.swing.*;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -111,6 +112,28 @@ public class UtilsSQLite {
             Statement stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
         } catch (SQLException e) { e.printStackTrace();System.out.println("ERROR SQLUTILS"); }
+        return rs;
+    }
+
+    public static int sqlSnapshots (Connection conn, String sql) {
+        int result = 0;
+        try {
+            Statement stmt = conn.createStatement();
+            result = stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Name exist","WARNING",JOptionPane.WARNING_MESSAGE);
+        }
+        return result;
+    }
+
+    public static ResultSet getTable(Connection conn, String sql) {
+        ResultSet rs = null;
+        try {
+            Statement st = conn.createStatement();
+            rs = st.executeQuery(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return rs;
     }
 }

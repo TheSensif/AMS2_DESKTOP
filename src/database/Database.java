@@ -13,12 +13,14 @@ import java.sql.SQLException;
 public class Database {
 
     public static void startDatabase() throws SQLException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        String filePath = System.getProperty("user.dir") + "/database/database.db";
+        String filePath = System.getProperty("user.dir") + "/src/database/database.db";
         // Conectar
 
         File fDatabase = new File(filePath);
         if (!fDatabase.exists()) {
             Connection conn = UtilsSQLite.connect(filePath);
+
+            // Create tables for users
 
             UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS users (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT,name varchar(15) NOT NULL UNIQUE, password varchar(500));");
@@ -28,6 +30,16 @@ public class Database {
 
             UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS pepers (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, peper varchar(500));");
+
+            // Create tables for SNAPTSHOTS
+
+
+            // date: strftime('%Y-%m-%d %H:%M')
+
+            UtilsSQLite.queryUpdate(conn,"CREATE TABLE IF NOT EXISTS snaptshots (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,json JSON NOT NULL,date TIMESTAMP NOT NULL,name varchar(15) NOT NULL UNIQUE);");
+
+            // Create user
 
             UtilsSQLite.queryUpdate(conn, "INSERT INTO users (name, password) VALUES (\"admin\",\"" + UtilsSQLite.encrypt(conn,"1234") + "\");");
 
